@@ -93,8 +93,6 @@ class Sales_model extends MY_Model
   }
   function add($data)
   {
-    /* echo "<pre>";
-    var_dump($data); */
     $this->db->insert($this->tbl, $data);
     return $this->db->insert_id();
   }
@@ -118,6 +116,32 @@ class Sales_model extends MY_Model
     return $this->db->affected_rows();
   }
 
+  function getOrderDetails($id)
+  {
+    $query = "SELECT 
+                sle.order_id, 
+                sle.prod_id, 
+                sle.price, 
+                sle.qty, 
+                sle.tax_rate, 
+                sle.total, 
+                sle.customer_name, 
+                sle.shipping, 
+                sle.attributes_value, 
+                pp.stylecode, 
+                pp.barcode, 
+                p.name, 
+                p.location,
+                p.image_path 
+              FROM 
+                `tbl_sales` sle 
+                LEFT JOIN tbl_product_price pp ON sle.prod_price_id = pp.prod_price_id 
+                LEFT JOIN tbl_products p ON p.prod_id = sle.prod_id 
+              WHERE 
+                sle.order_id = $id 
+                and sle.is_deleted = 0";
+    return $this->db->query($query)->result();
+  }
 
   function get_sales()
   {
@@ -220,45 +244,8 @@ class Sales_model extends MY_Model
         'quantity' => $row['quantity'],
       ];
     }
-    // array_push($orderItems[$ord_id]['customer'], $this->getCustomerID($id));
-    // array_push($orderItems[$ord_id]['shipping_line'], $this->getShippingLine($id));
     return $orderItems;
   }
-
-  /* function getCustomerID($id)
-  {
-    $query = "SELECT customer as cust_id
-    FROM `tbl_sales` 
-    WHERE order_id = '" . $id . "' and product_variants <> 0 and is_deleted = '0'
-    GROUP BY order_id";
-    $result = $this->db->query($query);
-    $data = [];
-    foreach ($result->result_array() as $row) {
-      $data[] = [
-        'id' => $row['cust_id']
-      ];
-    }
-    return $data;
-  }
-
-  function getShippingLine($id)
-  {
-    $query = "SELECT shipping
-    FROM `tbl_sales` 
-    WHERE order_id = '" . $id . "' and product_variants <> 0 and is_deleted = '0'
-    GROUP BY order_id";
-    $result = $this->db->query($query);
-    $data = [];
-    foreach ($result->result_array() as $row) {
-
-      $data[] = [
-        'custom' => true,
-        'title' => 'Standard',
-        'price' => $row['shipping']
-      ];
-    }
-    return $data;
-  } */
   function updateDraftOrderID($ordID, $draftID)
   {
     $this->db->where('order_id', $ordID);

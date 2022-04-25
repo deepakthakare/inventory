@@ -131,6 +131,7 @@ class Sales extends Admin_Controller
       $prod_id = !empty($this->input->post('prod_id')) ? $this->input->post('prod_id') : "";
       $attributes_value = !empty($this->input->post('attributes_value')) ? $this->input->post('attributes_value') : "";
       $product_variants = !empty($this->input->post('product_variants')) ? $this->input->post('product_variants') : "";
+      $prod_price_id = !empty($this->input->post('prod_price_id')) ? $this->input->post('prod_price_id') : "";
       $price = !empty($this->input->post('price')) ? $this->input->post('price') : "";
       $qty = !empty($this->input->post('qty')) ? $this->input->post('qty') : "";
       $total_amount = !empty($this->input->post('total_amount')) ? $this->input->post('total_amount') : "";
@@ -147,6 +148,7 @@ class Sales extends Admin_Controller
             'customer' => $customer[1],
             'attributes_value' => $attributes_value[$key],
             'product_variants' => $product_variants[$key],
+            'prod_price_id' => $prod_price_id[$key],
             'price' => $price[$key],
             'qty' => $qty[$key],
             'total' => $total_amount[$key],
@@ -185,11 +187,8 @@ class Sales extends Admin_Controller
     $key = SHOPIFY_API_KEY . '/admin/api/2022-04/draft_orders.json';
     $order_id = $this->input->post('order_id');
     $getArray = $this->sales_model->getOrderSHOPIFY($order_id);
-    $mainArray = $this->products_model->removeUselessArrays($getArray, 'customer');
-    $result = $this->sales_model->json_change_key($mainArray, $order_id, 'draft_order');
-    echo "<pre>";
+    $result = $this->sales_model->json_change_key($getArray, $order_id, 'draft_order');
     $jsonData = json_encode($result);
-    echo  $jsonData;
     $ch = curl_init($key);
     curl_setopt($ch, CURLINFO_HEADER_OUT, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
@@ -205,13 +204,22 @@ class Sales extends Admin_Controller
     $response = curl_exec($ch);
     curl_close($ch);
     $json_array = json_decode($response, true);
-    echo "<pre>";
-    print_r($json_array);
     $draftOrderID = $json_array['draft_order']['id'];
     if ($draftOrderID !== '') {
       $this->sales_model->updateDraftOrderID($order_id, $draftOrderID);
     }
     echo $response;
+  }
+
+  function getOrderDetails()
+  {
+    $order_id = $this->input->post('order_id');
+    $result = $this->sales_model->getOrderDetails($order_id);
+    if ($result) {
+      echo json_encode(array('message' => 'Order Details', 'type' => 'success', "data" => $result));
+    } else {
+      echo json_encode(array('message' => 'Something went wrong', 'type' => 'warning'));
+    }
   }
   public function _rules()
   {

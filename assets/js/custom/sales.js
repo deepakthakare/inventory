@@ -33,6 +33,9 @@ $(document).ready(function () {
 			"data-product_name"
 		);
 		let tax_rate = $("#product_variants option:selected").attr("data-tax_rate");
+		let prod_price_id = $("#product_variants option:selected").attr(
+			"data-prod_price_id"
+		);
 		let color = $("#product_variants option:selected").attr("data-color");
 		let product_variants = $("#product_variants option:selected").attr(
 			"data-variant_id"
@@ -127,6 +130,11 @@ $(document).ready(function () {
 			product_name +
 			'<input type="hidden" class="form-control" readonly name="prod_id[]" value="' +
 			prod_id +
+			'"></td>' +
+			"<td style='display:none'>" +
+			prod_price_id +
+			'<input type="hidden" class="form-control" readonly name="prod_price_id[]" value="' +
+			prod_price_id +
 			'"></td>' +
 			"<td>" +
 			stylecode +

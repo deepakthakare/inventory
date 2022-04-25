@@ -115,8 +115,8 @@
             <table class="table" id="tbl_attributes">
               <tr style="background-color: #5d83d9;color: white;">
                 <th>Image</th>
-
                 <th>Product</th>
+                <th style='display:none'>Prd Variant ID</th>
                 <th>StyleCode</th>
                 <th>Color</th>
                 <th>Attribute</th>
