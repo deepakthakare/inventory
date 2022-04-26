@@ -26,7 +26,7 @@
       <div class="card-body">
         <div class="table-responsive">
           <table class="table table-hover table-bordered" id="myTable">
-            <thead style="background: #1ba774;color:#fff">
+            <thead style="background: #7474e9;color:#fff">
               <tr>
                 <th>Id</th>
                 <th id="image">Image</th>

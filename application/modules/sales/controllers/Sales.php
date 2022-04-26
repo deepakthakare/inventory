@@ -130,6 +130,7 @@ class Sales extends Admin_Controller
       $next_order_id = $this->sales_model->next_order_id(); //var_dump($next_order_id);die;
       $prod_id = !empty($this->input->post('prod_id')) ? $this->input->post('prod_id') : "";
       $attributes_value = !empty($this->input->post('attributes_value')) ? $this->input->post('attributes_value') : "";
+      $color = !empty($this->input->post('color')) ? $this->input->post('color') : "";
       $product_variants = !empty($this->input->post('product_variants')) ? $this->input->post('product_variants') : "";
       $prod_price_id = !empty($this->input->post('prod_price_id')) ? $this->input->post('prod_price_id') : "";
       $price = !empty($this->input->post('price')) ? $this->input->post('price') : "";
@@ -146,7 +147,7 @@ class Sales extends Admin_Controller
             'sales_date' => $this->input->post('sales_date'),
             'customer_name' => $customer[0],
             'customer' => $customer[1],
-            'attributes_value' => $attributes_value[$key],
+            'attributes_value' => $color[$key] . ' / ' . $attributes_value[$key],
             'product_variants' => $product_variants[$key],
             'prod_price_id' => $prod_price_id[$key],
             'price' => $price[$key],

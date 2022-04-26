@@ -1,8 +1,5 @@
 /**
- * @Author: sahebul
- * @Date:   2019-06-11T11:44:01+05:30
- * @Last modified by:   sahebul
- * @Last modified time: 2019-06-11T11:44:10+05:30
+ * @Author: Deepak
  */
 $(document).ready(function () {
 	var myTable = $("#myTable").dataTable({
@@ -31,6 +28,7 @@ $(document).ready(function () {
 				data: "total",
 			},
 			{ data: "created_date" },
+			{ data: "draft_order_id" },
 			{ data: "order_id" },
 		],
 		order: [[0, "desc"]],
@@ -61,25 +59,33 @@ $(document).ready(function () {
 		columnDefs: [
 			{
 				render: function (data, type, row) {
-					return (
-						'<a class="btn btn-outline-primary btn-sm checkOrderDetails" data-order_id="' +
-						row.order_id +
-						'" href="#!" > View Details <i class="fa-solid fa-eye"></i> </a>'
-					);
-				},
-				targets: $("#myTable th#orderdetails").index(),
+					let status =
+						row.draft_order_id !== "0"
+							? '<button type="button" class="btn btn-success btn-sm" title="Draft Order Created.">' +
+							  "Created" +
+							  " </button>"
+							: '<button type="button" class="btn btn-warning btn-sm" title="Draft Order Pending.">' +
+							  "Pending" +
+							  "</button>";
+					return status;
+				}, ///
+				targets: $("#myTable th#status").index(),
 				orderable: true,
 				bSortable: true,
 			},
 			{
 				render: function (data, type, row) {
 					return (
-						' <a class="btn-danger btn-circle btn-sm text-white"  data-order_id=' +
+						'<a class="btn btn-outline-primary btn-sm checkOrderDetails" data-order_id="' +
+						row.order_id +
+						'" href="#!" title="View Order"><i class="fa-solid fa-eye"></i> </a> <a class="btn-danger btn-circle btn-sm text-white"  data-order_id=' +
 						row.order_id +
 						' id="btnDelete"><i class="fas fa-trash-alt"></i></a> <a href="#" class="btn-success btn-circle btn-sm text-white" data-toggle="tooltip" title="Order Push to Shopify" data-prod_id=' +
 						row.order_id +
 						' id="btnOrderPush" onclick="orderPushToShopify(' +
 						row.order_id +
+						"," +
+						row.draft_order_id +
 						');"><i class="fa-solid fa-cloud-arrow-up"></i></a> '
 					);
 				},
@@ -113,7 +119,7 @@ $(document).ready(function () {
 		}
 	});
 
-	// view Order Details
+	// Start view Order Details
 	$("#myTable").on("click", ".checkOrderDetails", function () {
 		let order_id = $(this).data("order_id");
 		console.log(order_id);
@@ -123,6 +129,15 @@ $(document).ready(function () {
 			.done(function (res) {
 				let resp = JSON.parse(res);
 				console.log(resp["data"]);
+				if (resp["data"][0]["draft_order_id"] === "0") {
+					$("#pause_button").html(
+						"<p class='draft_order_not'>Draft Order Not Created</p>"
+					);
+				} else {
+					$("#pause_button").html(
+						"<p class='draft_order'>Draft Order Created</p>"
+					);
+				}
 				var html = "";
 				if (resp["type"] === "success") {
 					$.each(resp["data"], function (key, val) {
@@ -150,6 +165,31 @@ $(document).ready(function () {
 							'</div>\
 							</div>\
 							<div class="col-sm-12">\
+								<div class="prd_attribute"> <b>Variants: </b>' +
+							val.attributes_value +
+							'</div>\
+							</div>\
+							<div class="col-sm-12">\
+								<div> <b>Price: </b>' +
+							val.price +
+							'</div>\
+							</div>\
+							<div class="col-sm-12">\
+								<div> <b>Stylecode: </b>' +
+							val.stylecode +
+							'</div>\
+							</div>\
+							<div class="col-sm-12">\
+								<div> <b>Barcode: </b>' +
+							val.barcode +
+							'</div>\
+							</div>\
+							<div class="col-sm-12">\
+								<div> <b>Location: </b>' +
+							val.location +
+							'</div>\
+							</div>\
+							<div class="col-sm-12">\
 								<div class="product_inventory"><b>Quantity: </b>' +
 							val.qty +
 							"</div>\
@@ -161,6 +201,20 @@ $(document).ready(function () {
 							html += "<hr/>";
 						}
 					});
+					html += "<hr/>";
+					html +=
+						'<div class="row" style="float:right">\
+					<div class="col-sm-12">\
+					<div class="prd_attribute"> <b>Customer Name: </b>' +
+						resp["data"][0]["customer_name"] +
+						'</div>\
+					</div>\
+					<div class="col-sm-12">\
+					<div class="prd_attribute"> <b>Shipping: </b>' +
+						resp["data"][0]["shipping"] +
+						"</div>\
+					</div>\
+					</div>";
 					$("#order_modal_body").html(html);
 					$("#orderDetailsModal").modal("show");
 				}
@@ -169,24 +223,52 @@ $(document).ready(function () {
 				console.log("falied");
 			});
 	});
+
+	//End view order Details
 });
 
-const orderPushToShopify = (order_id) => {
-	if (confirm("Are you sure, To push the order to shopify? ")) {
-		var url = ADMIN_URL + "sales/pushOrderToShopify";
-		var param = { order_id: order_id };
-		trigger_ajax(url, param)
-			.done(function (res) {
-				let resPrd = JSON.parse(res);
-				console.log(resPrd, "res");
-				if (resPrd.draft_order.id !== "") {
-					alert("Order Successfully Created");
-					let myTable = $("#myTable").DataTable();
-					myTable.ajax.reload(null, false);
+const orderPushToShopify = (order_id, variantID) => {
+	console.log(variantID, "variantID");
+	if (variantID !== 0) {
+		swal("Draft Order Already Created!", "", "warning");
+	} else {
+		swal(
+			{
+				title: "Are you sure?",
+				text: "To create Draft Order",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonClass: "btn-danger",
+				confirmButtonText: "Yes",
+				cancelButtonText: "No",
+				closeOnConfirm: false,
+				closeOnCancel: false,
+			},
+			function (isConfirm) {
+				if (isConfirm) {
+					var url = ADMIN_URL + "sales/pushOrderToShopify";
+					var param = { order_id: order_id };
+					trigger_ajax(url, param)
+						.done(function (res) {
+							let resPrd = JSON.parse(res);
+							console.log(resPrd, "res");
+							if (resPrd.draft_order.id !== "") {
+								swal(
+									"Created!",
+									"Draft Order successfully created!.",
+									"success"
+								);
+								let myTable = $("#myTable").DataTable();
+								myTable.ajax.reload(null, false);
+							}
+						})
+						.fail(function () {
+							console.log("falied");
+						});
+				} else {
+					swal("Cancelled", "", "error");
 				}
-			})
-			.fail(function () {
-				console.log("falied");
-			});
+			}
+		);
 	}
 };

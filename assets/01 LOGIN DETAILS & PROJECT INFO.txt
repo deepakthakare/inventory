@@ -2,7 +2,7 @@
 
 **Database Name: inventoryci**
 
-**Developed by Sahebul**
+**Developed by Deepak**
 
 **Recommended PHP Version 5.6.3**
 

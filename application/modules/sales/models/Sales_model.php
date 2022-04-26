@@ -124,7 +124,7 @@ class Sales_model extends MY_Model
                 sle.price, 
                 sle.qty, 
                 sle.tax_rate, 
-                sle.total, 
+                format(sle.total,2) as total, 
                 sle.customer_name, 
                 sle.shipping, 
                 sle.attributes_value, 
@@ -132,7 +132,8 @@ class Sales_model extends MY_Model
                 pp.barcode, 
                 p.name, 
                 p.location,
-                p.image_path 
+                p.image_path,
+                sle.draft_order_id 
               FROM 
                 `tbl_sales` sle 
                 LEFT JOIN tbl_product_price pp ON sle.prod_price_id = pp.prod_price_id 
@@ -148,6 +149,7 @@ class Sales_model extends MY_Model
     $query = "SELECT
                   ts.order_id,
                   ts.customer_name,
+                  ts.draft_order_id,
                   FORMAT(sum(ts.price),2) as price,
                   sum(ts.qty) as qty,
                   FORMAT(sum(ts.total),2) as total,
