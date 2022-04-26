@@ -23,8 +23,8 @@
                 <th>Quantity</th>
                 <th>Total Price (£)</th>
                 <th>Date</th>
-                <th id="orderdetails">Order Details</th>
-                <th id="action" width="10%">Action</th>
+                <th id="status">Order Status</th>
+                <th id="action" width="13%">Action</th>
               </tr>
             </thead>
           </table>
@@ -39,7 +39,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Order Details </h5>
+        <span id="pause_button"></span>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

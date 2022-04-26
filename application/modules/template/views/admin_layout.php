@@ -24,6 +24,8 @@
   <script src="<?= base_url("assets/vendor/jquery/jquery.min.js"); ?>"></script>
   <script src="<?= base_url("assets/js/bootstrap-notify.min.js"); ?>"></script>
   <script src="<?= base_url("assets/js/app.js"); ?>"></script>
+  <link href="<?= base_url("assets/css/custom.css"); ?>" rel="stylesheet">
+  <link rel="stylesheet" href="https://lipis.github.io/bootstrap-sweetalert/dist/sweetalert.css" />
   <!-- <link href="<?= base_url("assets/summernote/summernote.css"); ?>" rel="stylesheet">
   <script src="<?= base_url("assets/summernote/summernote-lite.js"); ?>"></script> -->
   <!-- <link href="<?= base_url("assets/css/style.css"); ?>" rel="stylesheet"> -->
@@ -51,7 +53,7 @@
         <div class="sidebar-brand-icon rotate-n-15">
           <!-- <i class="fas fa-laugh-wink"></i> add your logo-->
         </div>
-        <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logo.png" /></div>
+        <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logo.png" width="50" /></div>
       </a>
 
       <!-- Divider -->
@@ -326,7 +328,7 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $admin_user['username']; ?></span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small" style="text-transform: capitalize; font-size: 14px; color:#000000;"><?php echo $admin_user['username']; ?></span>
                 <i class="fas fa-user"></i>
               </a>
               <!-- Dropdown - User Information -->
@@ -408,6 +410,7 @@
   <script src="<?= base_url("assets/vendor/jquery-easing/jquery.easing.min.js"); ?>"></script>
   <script src="<?= base_url("assets/js/sb-admin-2.min.js"); ?>"></script>
   <script src="<?= base_url("assets/vendor/chart.js/Chart.min.js"); ?>"></script>
+  <script src="https://lipis.github.io/bootstrap-sweetalert/dist/sweetalert.js"></script>
   <?php echo $js; ?>
 
 </body>
