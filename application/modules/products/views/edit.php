@@ -82,7 +82,7 @@
             <div class="col-sm-2">
               <div class="form-group">
                 <label for="usr">Price:</label>
-                <input type="text" class="form-control" id="" name="p_price" value="<?php echo $edit_data[0]->p_price; ?>">
+                <input type="text" class="form-control" id="p_price" name="p_price" value="<?php echo $edit_data[0]->p_price; ?>">
                 <?php echo form_error('p_price'); ?>
               </div>
             </div>
@@ -96,7 +96,7 @@
             <div class="col-sm-2">
               <div class="form-group">
                 <label for="weight">Weight:</label>
-                <input type="text" class="form-control" id="" name="weight" value="<?php echo $edit_data[0]->weight; ?>">
+                <input type="text" class="form-control" id="weight" name="weight" value="<?php echo $edit_data[0]->weight; ?>">
                 <?php echo form_error('weight'); ?>
               </div>
             </div>

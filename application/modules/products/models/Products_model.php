@@ -105,6 +105,7 @@ class Products_model extends MY_Model
                   tb.name as brand_name,
                   tp.prd_barcode,
                   (select sum(pa.inventory) FROM tbl_product_price pa where pa.attributes_id = 4 and pa.is_deleted='0' and tp.prod_id = pa.prod_id) as inventory,
+                  tp.shopify_id,
                   (CASE WHEN tp.shopify_id <> 0 THEN 'Pushed'
                      WHEN tp.shopify_id = 0 THEN 'Pending'
                   END) AS shopi_status

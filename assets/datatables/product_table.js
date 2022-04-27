@@ -82,7 +82,7 @@ $(document).ready(function () {
 					return (
 						'<a class="btn btn-outline-primary btn-sm checkInventory" data-prod_id="' +
 						row.prod_id +
-						'" href="#!" > View Details <i class="far fa-hand-pointer"></i> </a>'
+						'" href="#!" title="View Order"> <i class="fa-solid fa-eye"></i> </a>'
 					);
 				},
 				targets: $("#myTable th#inventory").index(),
@@ -120,6 +120,8 @@ $(document).ready(function () {
 						row.prod_id +
 						' id="btnPush" onclick="pushToShopify(' +
 						prdID +
+						"," +
+						row.shopify_id +
 						');"><i class="fa-solid fa-cloud-arrow-up"></i></a>'
 					);
 				},
@@ -235,52 +237,45 @@ $(document).ready(function () {
 				console.log("falied");
 			});
 	});
-
-	$("#imgpop").on(
-		"click",
-		function (e) {
-			console.log("ddd");
-			var href = $(this).attr("href");
-			var popup = $('<div id="myPopup"></div>');
-
-			var image = $('<img id="image" src="' + href + '"/>');
-			popup.append(image);
-
-			var text = $("<p>My Text</p>");
-			popup.append(text);
-
-			var closeBtn = $("<button>X</button>");
-			popup.append(closeBtn);
-
-			popup.css("top", e.pageY + offsetY).css("left", e.pageX + offsetX);
-			popup.append("body");
-
-			closeBtn.button().click(function () {
-				$("#myPopup").remove();
-			});
-		},
-		function (e) {
-			// do nothing
-		}
-	);
 });
 
-const pushToShopify = (prod_id) => {
-	if (confirm("Are you sure, To transter the product to shopify? ")) {
-		var url = ADMIN_URL + "products/push";
-		var param = { prod_id: prod_id };
-		trigger_ajax(url, param)
-			.done(function (res) {
-				var res = JSON.parse(res);
-				console.log(res, "res");
-				if (res.product.id !== "") {
-					alert("Product Successfully Pushed");
-					var myTable = $("#myTable").DataTable();
-					myTable.ajax.reload(null, false);
+const pushToShopify = (prod_id, shopiID) => {
+	if (shopiID !== 0) {
+		swal("Product Already Created!", "", "warning");
+	} else {
+		swal(
+			{
+				title: "Are you sure?",
+				text: "To Push the product.",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonClass: "btn-danger",
+				confirmButtonText: "Yes",
+				cancelButtonText: "No",
+				closeOnConfirm: false,
+				closeOnCancel: false,
+			},
+			function (isConfirm) {
+				if (isConfirm) {
+					var url = ADMIN_URL + "products/push";
+					var param = { prod_id: prod_id };
+					trigger_ajax(url, param)
+						.done(function (res) {
+							var res = JSON.parse(res);
+							console.log(res, "res");
+							if (res.product.id !== "") {
+								swal("Created!", "Product successfully created!.", "success");
+								var myTable = $("#myTable").DataTable();
+								myTable.ajax.reload(null, false);
+							}
+						})
+						.fail(function () {
+							console.log("falied");
+						});
+				} else {
+					swal("Cancelled", "", "error");
 				}
-			})
-			.fail(function () {
-				console.log("falied");
-			});
+			}
+		);
 	}
 };
