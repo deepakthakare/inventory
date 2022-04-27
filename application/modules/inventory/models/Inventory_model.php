@@ -1,8 +1,6 @@
 <?php
-# @Author: Sahebul
-# @Date:   2019-06-03T11:18:52+05:30
-# @Last modified by:   Sahebul
-# @Last modified time: 2019-06-03T11:18:55+05:30
+# @Author: Deepak
+
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
@@ -174,8 +172,6 @@ class Inventory_model extends MY_Model
     function getInentoryItemId($variantID)
     {
         $url = SHOPIFY_API_KEY . '/admin/api/2022-04/variants/' . $variantID . '.json';
-        // $url = "https://912040110b75e3b1ce4fe721c626ff6d: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@isuf-una.myshopify.com/admin/api/2022-04/variants/" . $variantID . ".json";
-        //echo $url;
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,
