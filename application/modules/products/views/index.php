@@ -33,7 +33,7 @@
                 <th>Name</th>
                 <th>Barcode</th>
                 <th>Quanity</th>
-                <th id="inventory">Product Details</th>
+                <th id="inventory">View</th>
                 <th id="status">Status</th>
                 <th id="action" width="12%">Action</th>
               </tr>

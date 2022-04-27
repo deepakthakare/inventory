@@ -59,16 +59,9 @@ class Products extends Admin_Controller
     $data['attributes_list'] = $this->attributes_model->get_all();
     $data['prd_barcode'] = $this->barcodeGenerator();
     $this->layout->view_render('add', $data);
-    // $data['sold_as'] = $this->config->item('sold_as');
-    // $data['tax_rate'] = $this->config->item('tax_rate');
-    // $data['category_list'] = $this->category_model->get_all();
-    // $data['brand_list'] = $this->brands_model->get_all();
   }
   public function add_products()
   {
-    // echo "<pre>";
-    // var_dump($this->input->post());
-    // die;
     $this->_rules();
     if ($this->form_validation->run() == FALSE) {
       $this->add();
@@ -87,17 +80,11 @@ class Products extends Admin_Controller
         $data['image_path'] = $image[0];
       }
 
-      // echo "<pre>";
-      // var_dump($data);
-      // die;
       $result = $this->products_model->add($data);
 
       $attributes = !empty($this->input->post('attributes')) ? $this->input->post('attributes') : "";
       $attributes_value = !empty($this->input->post('attributes_value')) ? $this->input->post('attributes_value') : "";
       $stylecode = !empty($this->input->post('stylecode')) ? $this->input->post('stylecode') : "";
-      // $sold_as = !empty($this->input->post('sold_as')) ? $this->input->post('sold_as') : "";
-      // $price = !empty($this->input->post('price')) ? $this->input->post('price') : "";
-      // $tax_rate = !empty($this->input->post('tax_rate')) ? $this->input->post('tax_rate') : "";
       $inventory = !empty($this->input->post('inventory')) ? $this->input->post('inventory') : "";
       $barcode = !empty($this->input->post('barcode')) ? $this->input->post('barcode') : "";
       if ($attributes) {
@@ -110,9 +97,6 @@ class Products extends Admin_Controller
             'inventory' => $inventory[$key],
             'barcode' => $barcode[$key]
           );
-          // echo "<pre>";
-          // var_dump($attribute_data);
-          // die;
           $this->products_model->add_price($attribute_data);
         }
       }
@@ -144,10 +128,6 @@ class Products extends Admin_Controller
       );
 
       $data['edit_data'] = $row;
-      // $data['stylecode'] = $this->config->item('stylecode');
-      // $data['barcode'] = $this->config->item('barcode');
-      //$data['category_list'] = $this->category_model->get_all();
-      // $data['brand_list'] = $this->brands_model->get_all();
       $data['attributes_list'] = $this->attributes_model->get_all();
       $this->layout->view_render('edit', $data);
     } else {
@@ -183,18 +163,14 @@ class Products extends Admin_Controller
     $attributes = !empty($this->input->post('attributes')) ? $this->input->post('attributes') : "";
     $attributes_value = !empty($this->input->post('attributes_value')) ? $this->input->post('attributes_value') : "";
     $stylecode = !empty($this->input->post('stylecode')) ? $this->input->post('stylecode') : "";
-    // $sold_as = !empty($this->input->post('sold_as')) ? $this->input->post('sold_as') : "";
-    // $price = !empty($this->input->post('price')) ? $this->input->post('price') : "";
     $inventory = !empty($this->input->post('inventory')) ? $this->input->post('inventory') : "";
     $barcode = !empty($this->input->post('barcode')) ? $this->input->post('barcode') : "";
-    // $tax_rate = !empty($this->input->post('tax_rate')) ? $this->input->post('tax_rate') : "";
     if ($attributes) {
       $this->products_model->update_price($prod_id);
       foreach ($attributes as $key => $value) {
         $attribute_data = array(
           'attributes_id' => $attributes[$key],
           'attributes_value' => $attributes_value[$key],
-          //'price' => $price[$key],
           'stylecode' => $stylecode[$key],
           'inventory' => $inventory[$key],
           'updated_at' => date("Y-m-d h:i:s"),

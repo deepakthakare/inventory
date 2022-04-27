@@ -151,3 +151,17 @@ $(document).ready(function () {
 	});
 	// end of change attributes
 });
+
+$(function () {
+	$("#p_price,#weight")
+		.on("input", function (e) {
+			if (/^(\d+(\.\d{0,2})?)?$/.test($(this).val())) {
+				// Input is OK. Remember this value
+				$(this).data("prevValue", $(this).val());
+			} else {
+				// Input is not OK. Restore previous value
+				$(this).val($(this).data("prevValue") || "");
+			}
+		})
+		.trigger("input"); // Initialise the `prevValue` data properties
+});
