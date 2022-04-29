@@ -71,8 +71,6 @@ class Sales extends Admin_Controller
   function getAllProducts()
   {
     $products = $this->sales_model->getAllProducts();
-    /*   echo "<pre>";
-    var_dump($products); */
     if ($products) {
       echo '<option value="">Select Products</option>';
       foreach ($products as $row) {
