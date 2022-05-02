@@ -1,10 +1,5 @@
 <?php
-# @Author: Sahebul
-# @Date:   2019-05-23T12:16:10+05:30
-# @Last modified by:   Sahebul
-# @Last modified time: 2019-05-25T10:28:33+05:30
-
-
+# @Author: Deepak
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');

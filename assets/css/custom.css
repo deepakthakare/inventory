@@ -33,3 +33,18 @@ style attribute {
 .modal-body {
   color:#201f1f
 }
+.ttl-sales {
+  background-color: #b169f3;
+}
+.ttl-product {
+  background-color: #14d8f1;
+}
+.ttl-category {
+  background-color: #01c784;
+}
+.ttl-brand {
+  background-color: #92d130;
+}
+.text-dashboard {
+  color:#fff
+}

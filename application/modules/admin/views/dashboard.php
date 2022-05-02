@@ -1,8 +1,6 @@
-
-
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
   <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-  <a href="<?=admin_url("reports")?>" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i class="fas fa-file-excel fa-sm text-white-50"></i> Generate Report</a>
+  <a href="<?= admin_url("reports") ?>" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i class="fas fa-file-excel fa-sm text-white-50"></i> Generate Report</a>
 </div>
 
 <!-- Content Row -->
@@ -10,12 +8,12 @@
 
   <!-- Earnings (Monthly) Card Example -->
   <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-primary shadow h-100 py-2">
+    <div class="card border-left-primary shadow h-100 py-2 ttl-sales">
       <div class="card-body">
-        <div class="row no-gutters align-items-center">
+        <div class="row no-gutters align-items-center ttl-sales">
           <div class="col mr-2">
-            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Sales</div>
-            <div class="h5 mb-0 font-weight-bold text-gray-800">$<?=number_format($sales,2)?></div>
+            <div class="text-xs font-weight-bold text-dashboard text-uppercase mb-1">Total Sales</div>
+            <div class="h5 mb-0 font-weight-bold text-dashboard">$<?= number_format($sales, 2) ?></div>
           </div>
           <div class="col-auto">
             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -27,12 +25,12 @@
 
   <!-- Earnings (Monthly) Card Example -->
   <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-success shadow h-100 py-2">
+    <div class="card border-left-success shadow h-100 py-2 ttl-product">
       <div class="card-body">
-        <div class="row no-gutters align-items-center">
+        <div class="row no-gutters align-items-center ">
           <div class="col mr-2">
-            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Products</div>
-            <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$products;?></div>
+            <div class="text-xs font-weight-bold text-dashboard text-uppercase mb-1">Products</div>
+            <div class="h5 mb-0 font-weight-bold text-dashboard"><?= $products; ?></div>
           </div>
           <div class="col-auto">
             <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
@@ -44,14 +42,14 @@
 
   <!-- Earnings (Monthly) Card Example -->
   <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-info shadow h-100 py-2">
+    <div class="card border-left-info shadow h-100 py-2 ttl-category">
       <div class="card-body">
-        <div class="row no-gutters align-items-center">
+        <div class="row no-gutters align-items-center ">
           <div class="col mr-2">
-            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">categories</div>
+            <div class="text-xs font-weight-bold text-uppercase mb-1 text-dashboard">categories</div>
             <div class="row no-gutters align-items-center">
               <div class="col-auto">
-                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?=$categories;?></div>
+                <div class="h5 mb-0 mr-3 font-weight-bold text-dashboard"><?= $categories; ?></div>
               </div>
               <!-- <div class="col">
                 <div class="progress progress-sm mr-2">
@@ -70,12 +68,12 @@
 
   <!-- Pending Requests Card Example -->
   <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-warning shadow h-100 py-2">
+    <div class="card border-left-warning shadow h-100 py-2 ttl-brand">
       <div class="card-body">
-        <div class="row no-gutters align-items-center">
+        <div class="row no-gutters align-items-center ">
           <div class="col mr-2">
-            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Brands</div>
-            <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$brands;?></div>
+            <div class="text-xs font-weight-bold text-dashboard text-uppercase mb-1">Brands</div>
+            <div class="h5 mb-0 font-weight-bold text-dashboard"><?= $brands; ?></div>
           </div>
           <div class="col-auto">
             <i class="fas fa-tags fa-2x text-gray-300"></i>
