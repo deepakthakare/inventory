@@ -5,7 +5,7 @@
   <div class="col-xl-12 col-lg-12">
     <div class="card shadow mb-4">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Sales List</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Orders List</h6>
         <div class="dropdown no-arrow">
           <a class="btn btn-outline-success btn-sm" href="<?= admin_url('sales/add'); ?>" role="button">
             <i class="fas fa-plus fa-sm"></i> Add sales

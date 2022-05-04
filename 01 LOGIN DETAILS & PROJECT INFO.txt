@@ -1,5 +1,5 @@
 
 **Login Details**
 
-Username: admin
-Password: admin
+Username: deepak
+Password: deepak

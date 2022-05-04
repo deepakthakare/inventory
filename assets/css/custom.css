@@ -48,3 +48,8 @@ style attribute {
 .text-dashboard {
   color:#fff
 }
+
+.swal-wide{
+  width:260px !important;
+  margin-left: 100px !important;
+}

@@ -25,7 +25,7 @@ class Sales extends Admin_Controller
     $this->load_datatables();
     $this->layout->add_js('../datatables/sales_table.js');
     $this->breadcrumbs->admin_push('Dashboard', 'dashboard');
-    $this->breadcrumbs->admin_push('Sales List', 'sales');
+    $this->breadcrumbs->admin_push('Orders List', 'sales');
     $this->layout->view_render('index');
   }
   public function get_sales()
