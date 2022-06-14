@@ -31,7 +31,7 @@ defined('FILE_WRITE_MODE') or define('FILE_WRITE_MODE', 0666);
 defined('DIR_READ_MODE')   or define('DIR_READ_MODE', 0755);
 defined('DIR_WRITE_MODE')  or define('DIR_WRITE_MODE', 0755);
 
-// Shopify APP API Key
+// Shopify APP API Key. Added by deepak
 defined('SHOPIFY_API_KEY')  or define('SHOPIFY_API_KEY', 'https://912040110b75e3b1ce4fe721c626ff6d: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@isuf-una.myshopify.com');
 
 

@@ -1,8 +1,5 @@
 <?php
-# @Author: sahebul
-# @Date:   2019-06-11T11:31:39+05:30
-# @Last modified by:   Deepak
-# @Last modified time: 2019-06-11T11:31:55+05:30
+# @Author: Deepak
 
 if (!defined('BASEPATH'))
   exit('No direct script access allowed');
@@ -28,7 +25,7 @@ class Sales extends Admin_Controller
     $this->load_datatables();
     $this->layout->add_js('../datatables/sales_table.js');
     $this->breadcrumbs->admin_push('Dashboard', 'dashboard');
-    $this->breadcrumbs->admin_push('Sales List', 'sales');
+    $this->breadcrumbs->admin_push('Orders List', 'sales');
     $this->layout->view_render('index');
   }
   public function get_sales()
@@ -71,8 +68,6 @@ class Sales extends Admin_Controller
   function getAllProducts()
   {
     $products = $this->sales_model->getAllProducts();
-    /*   echo "<pre>";
-    var_dump($products); */
     if ($products) {
       echo '<option value="">Select Products</option>';
       foreach ($products as $row) {

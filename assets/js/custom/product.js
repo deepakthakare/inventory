@@ -165,3 +165,44 @@ $(function () {
 		})
 		.trigger("input"); // Initialise the `prevValue` data properties
 });
+
+const printBarcode = (id, barcode) => {
+	/* swal("Write something here:", {
+		content: "input",
+	}).then((value) => {
+		swal(`You typed: ${value}`);
+	}); */
+	swal(
+		{
+			title: "",
+			text: "Enter Barcode Quantity:",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "Barcode Quantity",
+			customClass: "swal-wide",
+		},
+		function (inputValue) {
+			if (inputValue === false) return false;
+			if (inputValue === "") {
+				swal.showInputError("Enter Barcode Quantity.");
+				return false;
+			}
+			console.log(`${inputValue} - ${id} -${barcode} `);
+			if (id !== "" || barcode !== "") {
+				swal("", "Barcode Generated successfully", "success");
+				/* let hostname = window.location.origin;
+				console.log(hostname); */
+				let url =
+					"http://localhost/sales-inventory-ci/" +
+					"html/ean13.php?id=" +
+					id +
+					"&barcode=" +
+					barcode +
+					"&quantity=" +
+					inputValue;
+				window.open(url, "_blank");
+			}
+		}
+	);
+};

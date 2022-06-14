@@ -166,7 +166,7 @@
                 <th>StyleCode</th>
                 <th>Quantity</th>
                 <th>Barcode</th>
-                <th>Action</th>
+                <th width="8%">Action</th>
               </tr>
 
 

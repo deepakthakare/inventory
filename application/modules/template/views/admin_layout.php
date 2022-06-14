@@ -13,7 +13,7 @@
   <?php $admin_user = $this->session->userdata();
   ?>
   <!-- Icons-->
-  <link rel="shortcut icon" type="image/x-icon" href="<?= base_url(); ?>assets/admin/img/favicon.ico">
+  <link rel="shortcut icon" type="image/x-icon" href="<?= base_url(); ?>assets/img/favicon.png">
   <link href="<?= base_url("assets/vendor/fontawesome-free/css/all.min.css"); ?>" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -26,6 +26,8 @@
   <script src="<?= base_url("assets/js/app.js"); ?>"></script>
   <link href="<?= base_url("assets/css/custom.css"); ?>" rel="stylesheet">
   <link rel="stylesheet" href="https://lipis.github.io/bootstrap-sweetalert/dist/sweetalert.css" />
+
+
   <!-- <link href="<?= base_url("assets/summernote/summernote.css"); ?>" rel="stylesheet">
   <script src="<?= base_url("assets/summernote/summernote-lite.js"); ?>"></script> -->
   <!-- <link href="<?= base_url("assets/css/style.css"); ?>" rel="stylesheet"> -->
@@ -186,6 +188,11 @@
                 } else {
                   echo 'class="collapse-item"';
                 } ?> href="<?= admin_url('sales') ?>">Orders List</a>
+            <a <?php if ($this->router->method == "index") {
+                  echo 'class="collapse-item active"';
+                } else {
+                  echo 'class="collapse-item"';
+                } ?> href="<?= admin_url('orders') ?>">IFIF Orders List</a>
           </div>
         </div>
       </li>
@@ -411,6 +418,8 @@
   <script src="<?= base_url("assets/js/sb-admin-2.min.js"); ?>"></script>
   <script src="<?= base_url("assets/vendor/chart.js/Chart.min.js"); ?>"></script>
   <script src="https://lipis.github.io/bootstrap-sweetalert/dist/sweetalert.js"></script>
+
+
   <?php echo $js; ?>
 
 </body>

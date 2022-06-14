@@ -5,7 +5,7 @@
 $(document).ready(function () {
 	// get all customers
 	$.ajax({
-		type: "post",
+		type: "get",
 		url: ADMIN_URL + "sales/getShopifyCustomers",
 		success: function (data) {
 			$("#customer").html(data);
@@ -14,7 +14,7 @@ $(document).ready(function () {
 
 	// get shopify product
 	$.ajax({
-		type: "post",
+		type: "get",
 		url: ADMIN_URL + "sales/getAllProducts",
 		success: function (data) {
 			$("#all_products").html(data);

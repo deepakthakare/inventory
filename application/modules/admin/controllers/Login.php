@@ -1,10 +1,5 @@
 <?php
-# @Author: Sahebul
-# @Date:   2019-05-23T12:16:10+05:30
-# @Last modified by:   Sahebul
-# @Last modified time: 2019-05-25T10:28:33+05:30
-
-
+# @Author: Deepak
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
@@ -18,14 +13,15 @@ class Login extends Controller
         $this->load->library('form_validation');
     }
 
-	public function index()
+    public function index()
     {
-      if(isset($this->session->userdata['admin_logged_in']) && $this->session->userdata['admin_logged_in']){
-        redirectToAdmin("dashboard");
-      }
-       $this->layout->view_render('login');
+        if (isset($this->session->userdata['admin_logged_in']) && $this->session->userdata['admin_logged_in']) {
+            redirectToAdmin("dashboard");
+        }
+        $this->layout->view_render('login');
     }
-	public function login_process(){
+    public function login_process()
+    {
         $this->load->library("form_validation");
         $this->form_validation->set_rules("username", "Username", "required");
         $this->form_validation->set_rules("password", "Password", "required");
@@ -36,20 +32,20 @@ class Login extends Controller
             $username = $this->security->xss_clean($this->input->post("username"));
             $password = $this->security->xss_clean($this->input->post("password"));
             $this->load->model("login_model");
-            if($this->login_model->process($username, $password)) {
-                if($this->session->userdata['redirectToCurrent']){
-                  redirectTo($this->session->userdata['redirectToCurrent']);
-                }else {
-                  redirectToAdmin("dashboard");
+            if ($this->login_model->process($username, $password)) {
+                if ($this->session->userdata['redirectToCurrent']) {
+                    redirectTo($this->session->userdata['redirectToCurrent']);
+                } else {
+                    redirectToAdmin("dashboard");
                 }
-
             } else {
                 $this->session->set_flashdata('flashMessage', 'Invalid username or password!');
                 $this->index();
             }
         }
     } // End of process()
-	public function logout(){
+    public function logout()
+    {
         $this->session->sess_destroy();
         session_write_close();
         redirect(admin_url('admin/login'));

@@ -158,7 +158,7 @@
                 <th>StyleCode</th>
                 <th>Quantity</th>
                 <th>Barcode</th>
-                <th>Action</th>
+                <th width="8%">Action</th>
               </tr>
               <?php foreach ($edit_data as $key => $value) { ?>
                 <tr>
@@ -170,7 +170,9 @@
                   <td><input type="text" class="form-control" readonly name="stylecode[]" value="<?= $value->stylecode; ?>"></td>
                   <td><input type="text" class="form-control" name="inventory[]" value="<?= $value->inventory; ?>"></td>
                   <td><input type="text" class="form-control" readonly name="barcode[]" value="<?= $value->barcode; ?>"></td>
-                  <td><a href="#!" class="btn-danger btn-circle btn-sm text-white btn_remove_row" onclick="removeROW(this);"><i class="fas fa-trash-alt"></i></a></td>
+                  <td><a href="#!" class="btn-danger btn-circle btn-sm text-white btn_remove_row" onclick="removeROW(this);"><i class="fas fa-trash-alt"></i></a>
+                    <a href="#!" class="btn-primary btn-circle btn-sm text-white btn_remove_row" title="Print Barcode" onclick="printBarcode(<?= $value->prod_id; ?>,<?= $value->barcode; ?>);"><i class="fa fa-barcode"></i></a>
+                  </td>
                 </tr>
               <?php } ?>
 

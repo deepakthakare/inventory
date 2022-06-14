@@ -1,8 +1,6 @@
 <?php
-# @Author: Sahebul
-# @Date:   2019-05-24T14:31:41+05:30
-# @Last modified by:   Sahebul
-# @Last modified time: 2019-05-25T10:27:10+05:30
+# @Author: Deepak
+
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
@@ -23,9 +21,8 @@ class Activity extends Admin_Controller
         $this->breadcrumbs->admin_push('Activity Log', 'activity');
         $this->layout->view_render('index');
     }
-    public function get_activities(){
-     echo  $this->activity_model->get_activities();
+    public function get_activities()
+    {
+        echo  $this->activity_model->get_activities();
     }
-
-
 }

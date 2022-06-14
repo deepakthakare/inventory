@@ -207,6 +207,7 @@ class Products extends Admin_Controller
     }
   }
 
+  // Create/Push the  Products into the  Shopify Store
   public function push()
   {
     // echo SHOPIFY_API_KEY;
@@ -236,6 +237,7 @@ class Products extends Admin_Controller
     if ($shopiID !== '') {
       $this->products_model->updateShipifyPrdID($prod_id, $shopiID);
       $this->products_model->updateLocation($shopiID);
+      $this->products_model->addImage($shopiID);
     }
 
     $variants = array_map(function ($ar) {
