@@ -314,7 +314,50 @@ class Products_model extends MY_Model
           "type" => 'single_line_text_field'
         )
       )
+    );
+    $ch = curl_init($key);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+    curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_json);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt(
+      $ch,
+      CURLOPT_HTTPHEADER,
+      array(
+        'Content-Type: application/json',
+        'Content-Length: ' . strlen($data_json)
+      )
+    );
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+  }
 
+  function addImage($id)
+  {
+    $key =  SHOPIFY_API_KEY . '/admin/api/2022-04/products/' . $id . '/images.json';
+    $query = "SELECT 
+      p.image_path
+    FROM `tbl_products` p 
+    where p.shopify_id = '" . $id . "' and p.is_deleted = 0";
+    $result = $this->db->query($query);
+    // $row_num = $result->num_rows();
+    $image_path = [];
+    foreach ($result->result_array() as $row) {
+      $image_path[] = $row;
+    }
+
+    // Dynamic Image Path
+    //$imagePath = $image_path[0]['imagePath'];
+
+    // Static Image Path
+    $imagePath = "https://bgirlfashion-ffb8.kxcdn.com/199107-medium_default/1006370346734000.jpg";
+    $data_json = json_encode(
+      array(
+        "image" => array(
+          "src" => $imagePath,
+        )
+      )
     );
     $ch = curl_init($key);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
