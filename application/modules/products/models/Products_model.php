@@ -175,7 +175,7 @@ class Products_model extends MY_Model
         $emparray[$row['prod_id']] = [
           'title' => $row['name'],
           'body_html' => $row['description'],
-          "vendor" => "BGF",
+          "vendor" => "IFIF Lifestyle",
           "published" => "0",
           "published_at" => "2022-03-28T19:00:00-05:00", // date("Y-m-d h:i:s")
           "published_scope" => "global",
@@ -348,10 +348,10 @@ class Products_model extends MY_Model
     }
 
     // Dynamic Image Path
-    //$imagePath = $image_path[0]['imagePath'];
+    $imagePath = $image_path[0]['imagePath'];
 
     // Static Image Path
-    $imagePath = "https://bgirlfashion-ffb8.kxcdn.com/199107-medium_default/1006370346734000.jpg";
+    //$imagePath = "https://bgirlfashion-ffb8.kxcdn.com/199107-medium_default/1006370346734000.jpg";
     $data_json = json_encode(
       array(
         "image" => array(
