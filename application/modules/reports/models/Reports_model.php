@@ -16,21 +16,29 @@ class Reports_model extends MY_Model
   function get_products_report()
   {
     $query = "SELECT
-                  tp.name as product_name,
-                  tc.name as category,
-                  tb.name as brand,
-                  tpp.attributes_value as attributes_value,
-                  tap.name as attribute,
-                  tpp.sold_as,
-                  tpp.price,
-                  tpp.tax_rate,
-                  tpp.inventory
-                 FROM tbl_products as tp
-                 LEFT JOIN tbl_product_price as tpp on tp.prod_id=tpp.prod_id
-                 LEFT JOIN tbl_product_attributes as tap on tap.attributes_id=tpp.attributes_id
-                 LEFT JOIN tbl_category as tc on tp.category_id=tc.category_id
-                 LEFT JOIN tbl_brand as tb on tb.brand_id=tb.brand_id
-                 WHERE  tp.is_deleted='0' group by tpp.prod_price_id";
+                    tp.image_path,
+                    tp.prod_id as product_id,
+                    tp.shopify_id as shopify_id,
+                    tpp.variant_id as shopify_variant_id,
+                    tp.name AS product_name,
+                    tp.prd_barcode as parent_barcode,
+                    tpp.barcode as child_barcode,
+                    tap.name AS attribute,
+                    tpp.attributes_value AS attributes_value,
+                    tp.p_price as price,
+                    tp.location as location,
+                    tpp.stylecode,
+                    tpp.inventory,
+                    tp.created_at,
+                    tp.updated_at
+                FROM
+                    tbl_products AS tp
+                LEFT JOIN tbl_product_price AS tpp ON  tp.prod_id = tpp.prod_id
+                LEFT JOIN tbl_product_attributes AS tap ON tap.attributes_id = tpp.attributes_id
+                WHERE
+                    tp.is_deleted = '0'
+                GROUP BY
+                    tpp.prod_price_id";
     return $this->db->query($query)->result('array');
   }
   function get_category_report()

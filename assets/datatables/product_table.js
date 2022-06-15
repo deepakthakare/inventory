@@ -249,11 +249,13 @@ const pushToShopify = (prod_id, shopiID) => {
 				text: "To Push the product.",
 				type: "warning",
 				showCancelButton: true,
-				confirmButtonClass: "btn-danger",
+				confirmButtonClass: "btn-primary",
+				cancelButtonClass: "btn-secondary",
 				confirmButtonText: "Yes",
 				cancelButtonText: "No",
 				closeOnConfirm: false,
 				closeOnCancel: false,
+				showLoaderOnConfirm: true,
 			},
 			function (isConfirm) {
 				if (isConfirm) {
@@ -264,9 +266,11 @@ const pushToShopify = (prod_id, shopiID) => {
 							var res = JSON.parse(res);
 							console.log(res, "res");
 							if (res.product.id !== "") {
-								swal("Created!", "Product successfully created!.", "success");
-								var myTable = $("#myTable").DataTable();
-								myTable.ajax.reload(null, false);
+								setTimeout(function () {
+									swal("Created!", "Product successfully created!.", "success");
+									var myTable = $("#myTable").DataTable();
+									myTable.ajax.reload(null, false);
+								}, 6000);
 							}
 						})
 						.fail(function () {

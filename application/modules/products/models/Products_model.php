@@ -348,7 +348,7 @@ class Products_model extends MY_Model
     }
 
     // Dynamic Image Path
-    $imagePath = $image_path[0]['imagePath'];
+    $imagePath = $image_path[0]['image_path'];
 
     // Static Image Path
     //$imagePath = "https://bgirlfashion-ffb8.kxcdn.com/199107-medium_default/1006370346734000.jpg";
