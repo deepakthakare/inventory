@@ -12,7 +12,7 @@ $(document).ready(function () {
 		bProcessing: true,
 		iDisplayLength: 10,
 		bServerSide: true,
-		sAjaxSource: ADMIN_URL + "category/get_category",
+		sAjaxSource: ADMIN_URL + "users/get_users",
 		bPaginate: true,
 		fnServerParams: function (aoData) {
 			var acolumns = this.fnSettings().aoColumns,
@@ -22,7 +22,7 @@ $(document).ready(function () {
 			});
 			aoData.push({ name: "columns", value: columns });
 		},
-		columns: [{ data: "category_id" }, { data: "name" }],
+		columns: [{ data: "login_id" }, { data: "username" }],
 		order: [[0, "desc"]],
 		lengthMenu: [
 			[10, 25, 50, 100],
@@ -54,10 +54,10 @@ $(document).ready(function () {
 					return (
 						'<a class="btn-primary btn-circle btn-sm" href="' +
 						ADMIN_URL +
-						"category/edit/" +
-						row.category_id +
-						'" ><i class="fas fa-pencil-alt"></i></a> <a class="btn-danger btn-circle btn-sm text-white"  data-category_id=' +
-						row.category_id +
+						"users/edit/" +
+						row.login_id +
+						'" ><i class="fas fa-pencil-alt"></i></a> <a class="btn-danger btn-circle btn-sm text-white"  data-login_id=' +
+						row.login_id +
 						' id="btnDelete"><i class="fas fa-trash-alt"></i></a>'
 					);
 				},
@@ -70,10 +70,10 @@ $(document).ready(function () {
 	$(".dataTables_filter input").attr("placeholder", "Search...");
 
 	$("#myTable").on("click", "#btnDelete", function () {
-		var category_id = $(this).data("category_id");
+		var login_id = $(this).data("login_id");
 		if (confirm("Are you sure?")) {
-			var url = ADMIN_URL + "category/delete";
-			var param = { category_id: category_id };
+			var url = ADMIN_URL + "users/delete";
+			var param = { login_id: login_id };
 			trigger_ajax(url, param)
 				.done(function (res) {
 					var res = JSON.parse(res);

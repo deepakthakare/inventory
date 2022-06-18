@@ -2,6 +2,7 @@
  * @Author: Deepak
  */
 $(document).ready(function () {
+	let DOMAIN = "IFIF LifeStyle";
 	var myTable = $("#myTable").dataTable({
 		bStateSave: true,
 		processing: true,
@@ -93,10 +94,14 @@ $(document).ready(function () {
 				render: function (data, type, row) {
 					let status =
 						row.shopi_status === "Pushed"
-							? '<button type="button" class="btn btn-success btn-sm" title="Pushed to Shopify Website.">' +
+							? '<button type="button" class="btn btn-success btn-sm" title="Pushed to ' +
+							  DOMAIN +
+							  ' Website">' +
 							  row.shopi_status +
 							  " </button>"
-							: '<button type="button" class="btn btn-warning btn-sm" title="Not Pushed to Shopify Website.">' +
+							: '<button type="button" class="btn btn-warning btn-sm" title="Not Pushed to ' +
+							  DOMAIN +
+							  ' Website.">' +
 							  row.shopi_status +
 							  "</button>";
 					return status;
@@ -116,7 +121,9 @@ $(document).ready(function () {
 						row.prod_id +
 						'" ><i class="fas fa-pencil-alt"></i></a> <a href="#" class="btn-danger btn-circle btn-sm text-white" data-toggle="tooltip" title="Delete"  data-prod_id=' +
 						row.prod_id +
-						' id="btnDelete"><i class="fas fa-trash-alt"></i></a> <a href="#" class="btn-success btn-circle btn-sm text-white" data-toggle="tooltip" title="Push to Shopify" data-prod_id=' +
+						' id="btnDelete"><i class="fas fa-trash-alt"></i></a> <a href="#" class="btn-success btn-circle btn-sm text-white" data-toggle="tooltip" title="Push to ' +
+						DOMAIN +
+						'" data-prod_id=' +
 						row.prod_id +
 						' id="btnPush" onclick="pushToShopify(' +
 						prdID +

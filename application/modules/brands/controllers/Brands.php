@@ -44,6 +44,8 @@ class Brands extends Admin_Controller
   }
   public function add_brands()
   {
+    /*  $userDetails = $this->username;
+    print_r($userDetails); */
     $this->_rules();
     if ($this->form_validation->run() == FALSE) {
       $this->add();

@@ -1,5 +1,7 @@
 <div class="mb-4">
-  <?= $this->breadcrumbs->show(); ?>
+  <?= $this->breadcrumbs->show();
+
+  ?>
 </div>
 <div class="row">
   <div class="col-xl-12 col-lg-12">

@@ -214,7 +214,7 @@ class Products extends Admin_Controller
     $key = SHOPIFY_API_KEY . '/admin/products.json';
     //echo $key;
     $prod_id = $this->input->post('prod_id');
-    $result = $this->products_model->getProductSHOPIFY($prod_id);
+    $result = $this->products_model->createProductSHOPIFY($prod_id);
     $finalArray = $this->products_model->removeUselessArrays($result, 'variants');
     $jsonData = json_encode($this->json_change_key($finalArray, $prod_id, 'product'));
     $ch = curl_init($key);

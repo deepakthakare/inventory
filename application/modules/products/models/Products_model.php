@@ -33,8 +33,6 @@ class Products_model extends MY_Model
   }
   function add($data)
   {
-    /* echo "<pre>";
-    var_dump($this->input->post()); */
     $this->db->insert($this->tbl, $data);
     return $this->db->insert_id();
   }
@@ -147,9 +145,9 @@ class Products_model extends MY_Model
     return $resData;
   }
 
-  // Get products data for shopify
+  // Create products data for shopify
 
-  function getProductSHOPIFY($id)
+  function createProductSHOPIFY($id)
   {
     $query = "SELECT p.prod_id,
                   p.name,

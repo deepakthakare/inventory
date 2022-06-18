@@ -2,9 +2,8 @@
  * @Author: Deepak
 
  */
-
 $(document).ready(function () {
-	var customersTable = $("#myTable").dataTable({
+	var myTable = $("#myTable").dataTable({
 		bStateSave: true,
 		processing: true,
 		bPaginate: true,
@@ -12,7 +11,7 @@ $(document).ready(function () {
 		bProcessing: true,
 		iDisplayLength: 10,
 		bServerSide: true,
-		sAjaxSource: ADMIN_URL + "category/get_category",
+		sAjaxSource: ADMIN_URL + "stores/get_stores",
 		bPaginate: true,
 		fnServerParams: function (aoData) {
 			var acolumns = this.fnSettings().aoColumns,
@@ -22,7 +21,7 @@ $(document).ready(function () {
 			});
 			aoData.push({ name: "columns", value: columns });
 		},
-		columns: [{ data: "category_id" }, { data: "name" }],
+		columns: [{ data: "id" }, { data: "name" }],
 		order: [[0, "desc"]],
 		lengthMenu: [
 			[10, 25, 50, 100],
@@ -54,10 +53,10 @@ $(document).ready(function () {
 					return (
 						'<a class="btn-primary btn-circle btn-sm" href="' +
 						ADMIN_URL +
-						"category/edit/" +
-						row.category_id +
-						'" ><i class="fas fa-pencil-alt"></i></a> <a class="btn-danger btn-circle btn-sm text-white"  data-category_id=' +
-						row.category_id +
+						"stores/edit/" +
+						row.id +
+						'" ><i class="fas fa-pencil-alt"></i></a> <a class="btn-danger btn-circle btn-sm text-white"  data-brand_id=' +
+						row.id +
 						' id="btnDelete"><i class="fas fa-trash-alt"></i></a>'
 					);
 				},
@@ -70,10 +69,10 @@ $(document).ready(function () {
 	$(".dataTables_filter input").attr("placeholder", "Search...");
 
 	$("#myTable").on("click", "#btnDelete", function () {
-		var category_id = $(this).data("category_id");
+		var store_id = $(this).data("id");
 		if (confirm("Are you sure?")) {
-			var url = ADMIN_URL + "category/delete";
-			var param = { category_id: category_id };
+			var url = ADMIN_URL + "stores/delete";
+			var param = { store_id: store_id };
 			trigger_ajax(url, param)
 				.done(function (res) {
 					var res = JSON.parse(res);

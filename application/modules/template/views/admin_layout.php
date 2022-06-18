@@ -129,6 +129,8 @@
         </div>
       </li>
 
+
+
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAttributes" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-ellipsis-h"></i>
@@ -174,7 +176,7 @@
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSales" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-dollar-sign"></i>
+          <i class="fa-solid fa-sterling-sign"></i>
           <span>Orders</span>
         </a>
         <div id="collapseSales" <?php if ($this->router->class == "sales") {
@@ -216,6 +218,33 @@
           </div>
         </div>
       </li>
+
+      <!-- Start Stores Code -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStores" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fa-solid fa-store"></i>
+          <span>Stores</span>
+        </a>
+        <div id="collapseStores" <?php if ($this->router->class == "stores") {
+                                    echo 'class="collapse show"';
+                                  } else {
+                                    echo 'class="collapse"';
+                                  } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                  echo 'class="collapse-item active"';
+                } else {
+                  echo 'class="collapse-item"';
+                } ?> href="<?= admin_url('stores') ?>">Stores List</a>
+            <a <?php if ($this->router->method == "add") {
+                  echo 'class="collapse-item active"';
+                } else {
+                  echo 'class="collapse-item"';
+                } ?> href="<?= admin_url('stores/add') ?>">Add Stores</a>
+          </div>
+        </div>
+      </li>
+      <!-- End Stores code -->
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 

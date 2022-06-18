@@ -2,6 +2,7 @@
  * @Author: Deepak
  */
 $(document).ready(function () {
+	let DOMAIN = "IFIF LifeStyle";
 	var myTable = $("#myTable").dataTable({
 		bStateSave: true,
 		processing: true,
@@ -80,7 +81,9 @@ $(document).ready(function () {
 						row.order_id +
 						'" href="#!" title="View Order"><i class="fa-solid fa-eye"></i> </a> <a class="btn-danger btn-circle btn-sm text-white"  data-order_id=' +
 						row.order_id +
-						' id="btnDelete"><i class="fas fa-trash-alt"></i></a> <a href="#" class="btn-success btn-circle btn-sm text-white" data-toggle="tooltip" title="Order Push to Shopify" data-prod_id=' +
+						' id="btnDelete"><i class="fas fa-trash-alt"></i></a> <a href="#" class="btn-success btn-circle btn-sm text-white" data-toggle="tooltip" title="Order Push to ' +
+						DOMAIN +
+						'" data-prod_id=' +
 						row.order_id +
 						' id="btnOrderPush" onclick="orderPushToShopify(' +
 						row.order_id +

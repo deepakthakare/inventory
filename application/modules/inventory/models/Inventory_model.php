@@ -65,7 +65,7 @@ class Inventory_model extends MY_Model
         $this->db->from("tbl_product_price as tpp");
         $this->db->join('tbl_product_attributes as tap', 'tap.attributes_id=tpp.attributes_id', 'left');
         $this->db->join('tbl_products tp', 'tp.prod_id=tpp.prod_id', 'left');
-        $this->db->where("tpp.is_deleted", "0");
+        $this->db->where("tp.is_deleted", "0");
         $this->db->group_by('tpp.prod_price_id');
         $this->db->limit($limit, $start);
         $this->db->order_by($col, $dir);
