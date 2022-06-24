@@ -245,6 +245,32 @@
         </div>
       </li>
       <!-- End Stores code -->
+      <!-- Start Users Code -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fa-solid fa-users"></i>
+          <span>Users</span>
+        </a>
+        <div id="collapseUsers" <?php if ($this->router->class == "users") {
+                                  echo 'class="collapse show"';
+                                } else {
+                                  echo 'class="collapse"';
+                                } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                  echo 'class="collapse-item active"';
+                } else {
+                  echo 'class="collapse-item"';
+                } ?> href="<?= admin_url('users') ?>">Users List</a>
+            <a <?php if ($this->router->method == "add") {
+                  echo 'class="collapse-item active"';
+                } else {
+                  echo 'class="collapse-item"';
+                } ?> href="<?= admin_url('users/add') ?>">Add Users</a>
+          </div>
+        </div>
+      </li>
+      <!-- End Users code -->
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 

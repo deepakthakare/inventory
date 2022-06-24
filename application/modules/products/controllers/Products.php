@@ -9,6 +9,7 @@ class Products extends Admin_Controller
     parent::__construct();
     $this->load->model('products_model');
     $this->load->model('attributes/attributes_model');
+    $this->load->model('users/users_model');
     $this->load->library('form_validation');
     $this->load->library('breadcrumbs');
     $this->load->helper('fileUpload');
@@ -26,7 +27,8 @@ class Products extends Admin_Controller
   }
   public function get_products()
   {
-    echo  $this->products_model->get_products();
+    $storeID = $this->users_model->getStoreID($this->login_id);
+    echo  $this->products_model->get_products($storeID);
   }
   public function get_product_inventory()
   {
@@ -66,15 +68,15 @@ class Products extends Admin_Controller
     if ($this->form_validation->run() == FALSE) {
       $this->add();
     } else {
-      $name =
-        $data = array(
-          'name' => $this->input->post('name', TRUE),
-          'weight' => $this->input->post('weight', TRUE),
-          'prd_barcode' => $this->input->post('prd_barcode', TRUE),
-          'p_price' => $this->input->post('p_price', TRUE),
-          'location' => $this->input->post('location', TRUE),
-          'description' => $this->input->post('description', TRUE),
-        );
+      //$name =
+      $data = array(
+        'name' => $this->input->post('name', TRUE),
+        'weight' => $this->input->post('weight', TRUE),
+        'prd_barcode' => $this->input->post('prd_barcode', TRUE),
+        'p_price' => $this->input->post('p_price', TRUE),
+        'location' => $this->input->post('location', TRUE),
+        'description' => $this->input->post('description', TRUE),
+      );
       if ($this->input->post("upload_image")) {
         $image = moveFile(1, $this->input->post("upload_image"), "image");
         $data['image_path'] = $image[0];
@@ -211,7 +213,12 @@ class Products extends Admin_Controller
   public function push()
   {
     // echo SHOPIFY_API_KEY;
-    $key = SHOPIFY_API_KEY . '/admin/products.json';
+    $storeID = $this->users_model->getStoreID($this->login_id);
+    if ($storeID == 1) {
+      $key = SHOPIFY_API_KEY . '/admin/products.json';
+    } elseif ($storeID == 2) {
+      $key = SHOPIFY_API_KEY_BGF . '/admin/products.json';
+    }
     //echo $key;
     $prod_id = $this->input->post('prod_id');
     $result = $this->products_model->createProductSHOPIFY($prod_id);
@@ -235,19 +242,30 @@ class Products extends Admin_Controller
     $shopiID = $json_array['product']['id'];
     $arraVal = $json_array['product']['variants'];
     if ($shopiID !== '') {
-      $this->products_model->updateShipifyPrdID($prod_id, $shopiID);
-      $this->products_model->updateLocation($shopiID);
-      $this->products_model->addImage($shopiID);
+      // $this->products_model->updateShipifyPrdID($prod_id, $shopiID);
+      $this->products_model->updateLocation($shopiID, $storeID, $prod_id);
+      $this->products_model->addImage($shopiID, $storeID, $prod_id);
     }
 
     $variants = array_map(function ($ar) {
-      return $ar['id'] . "/" . $ar['option2'];
+      return $ar['id'] . "/" . $ar['option2'] . "/" . $ar['title'] . "/" . $ar['barcode'];
     }, $arraVal);
 
     foreach ($variants as $key => $value) {
       $arrSplit = explode('/', $value);
       if ($arrSplit[0] !== '') {
-        $this->products_model->updateVariantID($prod_id, $arrSplit[0], $arrSplit[1]);
+        $data = array(
+          'prod_id' => $prod_id,
+          'store_id' => $storeID,
+          'shopi_product_id' => $shopiID,
+          'shopi_variant_id' => $arrSplit[0],
+          'options' => $arrSplit[2] . "/" . $arrSplit[3],
+          'barcode_variant' => $arrSplit[4],
+        );
+        /* echo "<pre>";
+        print_r($data); */
+        // $this->products_model->updateVariantID($prod_id, $arrSplit[0], $arrSplit[1]);
+        $this->products_model->addProductData($data);
       }
     }
 
@@ -257,8 +275,6 @@ class Products extends Admin_Controller
   public function _rules()
   {
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    // $this->form_validation->set_rules('product_category', 'Product Category', 'trim|required');
-    // $this->form_validation->set_rules('brand', 'Product Brand', 'trim|required');
     $this->form_validation->set_rules('attributes[]', 'Product Attributes', 'trim|required');
     $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span><br/>');
   }

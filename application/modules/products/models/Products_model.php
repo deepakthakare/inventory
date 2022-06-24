@@ -46,11 +46,13 @@ class Products_model extends MY_Model
     $this->db->where('prod_price_id', $prod_price_id);
     $this->db->update("tbl_product_price", $data);
   }
+
   function update_price($prod_id)
   {
     $this->db->where('prod_id', $prod_id);
     $this->db->update("tbl_product_price", array('is_deleted' => "1"));
   }
+
   function updateShipifyPrdID($prod_id, $shopiID)
   {
     $this->db->where('prod_id', $prod_id);
@@ -62,6 +64,22 @@ class Products_model extends MY_Model
     $where = array('prod_id' => $prod_id, 'attributes_value ' => $size, 'attributes_id' => 4);
     $this->db->where($where);
     $this->db->update("tbl_product_price", array('variant_id' => $var_id));
+  }
+
+
+
+  function addProductData($data)
+  {
+    $this->db->insert('tbl_shopify_product_details', $data);
+    return $this->db->insert_id();
+  }
+
+  function getProducAttributeID($prod_id)
+  {
+    $query = " SELECT prod_price_id 
+                  FROM tbl_product_price 
+                  WHERE prod_id = $prod_id";
+    return $this->db->query($query)->result();
   }
 
   function edit($id, $data)
@@ -93,24 +111,51 @@ class Products_model extends MY_Model
                  WHERE  tpp.is_deleted='0' AND tpp.prod_id=$prod_id group by tpp.prod_price_id";
     return $this->db->query($query)->result();
   }
-  function get_products()
+  function get_products($storeID)
   {
-    $query = "SELECT
+    /*  $query = "SELECT
                   tp.prod_id,
                   tp.image_path,
                   tp.name,
-                  tc.name as category_name,
-                  tb.name as brand_name,
                   tp.prd_barcode,
                   (select sum(pa.inventory) FROM tbl_product_price pa where pa.attributes_id = 4 and pa.is_deleted='0' and tp.prod_id = pa.prod_id) as inventory,
-                  tp.shopify_id,
-                  (CASE WHEN tp.shopify_id <> 0 THEN 'Pushed'
-                     WHEN tp.shopify_id = 0 THEN 'Pending'
+                  spd.shopi_product_id,
+                  lg.store_id,
+                  (CASE WHEN spd.shopi_product_id <> 0 THEN 'Pushed'
+                     WHEN spd.shopi_product_id IS NULL THEN 'Pending'
                   END) AS shopi_status
                  FROM tbl_products as tp
-                 LEFT JOIN tbl_category as tc on tp.category_id=tc.category_id
-                 LEFT JOIN tbl_brand as tb on tp.brand_id=tb.brand_id
-                 WHERE tp.is_deleted='0' ";
+                LEFT JOIN tbl_shopify_product_details spd ON spd.prod_id = tp.prod_id
+                LEFT JOIN tbl_login lg ON lg.login_id = $userID
+                 WHERE tp.is_deleted='0' "; */
+    $query = "SELECT tp.prod_id,
+                    tp.image_path,
+                    tp.name,
+                    tp.prd_barcode,
+                    st.name as store_name,
+                    (SELECT SUM(pa.inventory)
+                    FROM   tbl_product_price pa
+                    WHERE  pa.attributes_id = 4
+                            AND pa.is_deleted = '0'
+                            AND tp.prod_id = pa.prod_id) AS inventory,
+                    (SELECT spde.shopi_product_id
+                    FROM   tbl_shopify_product_details spde
+                    WHERE  spde.prod_id = tp.prod_id
+                            AND spde.store_id = $storeID
+                    GROUP  BY spde.shopi_product_id)    AS shopi_product_id,
+                    (SELECT IF(( spde.shopi_product_id IS NOT NULL
+                                  OR spde.shopi_product_id <> '' )
+                              AND spde.store_id = $storeID, 'Pushed', '0')
+                    FROM   tbl_shopify_product_details spde
+                    WHERE  spde.prod_id = tp.prod_id
+                            AND spde.store_id = $storeID
+                    GROUP  BY spde.shopi_product_id)    AS shopi_status
+              FROM   tbl_products AS tp
+                    left join tbl_shopify_product_details spd
+                          ON spd.prod_id = tp.prod_id
+                    LEFT JOIN tbl_stores st 
+                          ON st.id = $storeID       
+              WHERE  tp.is_deleted = '0'";
 
     $totalCol = $this->input->post('iColumns');
     $search = $this->input->post('sSearch');
@@ -118,8 +163,10 @@ class Products_model extends MY_Model
     $start = $this->input->post('iDisplayStart');
     $page_length = $this->input->post('iDisplayLength');
 
-    $query .= " AND (tp.name like '%$search%' OR tp.prd_barcode like '%$search%' OR tb.name like '%$search%' )";
+    $query .= " AND (tp.name like '%$search%' OR tp.prd_barcode like '%$search%' OR tp.name like '%$search%' )";
     $query .= " GROUP BY tp.prod_id";
+    /* echo $query;
+    die; */
     $totalRecords = count($this->db->query($query)->result());
 
     for ($i = 0; $i < $this->input->post('iSortingCols'); $i++) {
@@ -290,13 +337,17 @@ class Products_model extends MY_Model
     return false;
   }
 
-  function updateLocation($id)
+  function updateLocation($id, $storeID, $prod_id)
   {
-    $key =  SHOPIFY_API_KEY . '/admin/api/2022-04/products/' . $id . '/metafields.json';
+    if ($storeID == 1) {
+      $key =  SHOPIFY_API_KEY . '/admin/api/2022-04/products/' . $id . '/metafields.json';
+    } elseif ($storeID == 2) {
+      $key =  SHOPIFY_API_KEY_BGF . '/admin/api/2022-04/products/' . $id . '/metafields.json';
+    }
     $query = "SELECT 
       p.location
     FROM `tbl_products` p 
-    where p.shopify_id = '" . $id . "' and p.is_deleted = 0";
+    where p.prod_id = '" . $prod_id . "' and p.is_deleted = 0";
     $result = $this->db->query($query);
     $locations = [];
     foreach ($result->result_array() as $row) {
@@ -331,13 +382,18 @@ class Products_model extends MY_Model
     return $response;
   }
 
-  function addImage($id)
+  function addImage($id, $storeID, $prod_id)
   {
-    $key =  SHOPIFY_API_KEY . '/admin/api/2022-04/products/' . $id . '/images.json';
+    if ($storeID == 1) {
+      $key =  SHOPIFY_API_KEY . '/admin/api/2022-04/products/' . $id . '/images.json';
+    }
+    if ($storeID == 2) {
+      $key =  SHOPIFY_API_KEY_BGF . '/admin/api/2022-04/products/' . $id . '/images.json';
+    }
     $query = "SELECT 
       p.image_path
-    FROM `tbl_products` p 
-    where p.shopify_id = '" . $id . "' and p.is_deleted = 0";
+    FROM `tbl_products` p
+    where p.prod_id = '" . $prod_id . "' and p.is_deleted = 0";
     $result = $this->db->query($query);
     // $row_num = $result->num_rows();
     $image_path = [];
@@ -347,7 +403,6 @@ class Products_model extends MY_Model
 
     // Dynamic Image Path
     $imagePath = $image_path[0]['image_path'];
-
     // Static Image Path
     //$imagePath = "https://bgirlfashion-ffb8.kxcdn.com/199107-medium_default/1006370346734000.jpg";
     $data_json = json_encode(
@@ -357,6 +412,7 @@ class Products_model extends MY_Model
         )
       )
     );
+
     $ch = curl_init($key);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
     curl_setopt($ch, CURLINFO_HEADER_OUT, true);

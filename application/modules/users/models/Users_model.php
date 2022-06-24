@@ -20,7 +20,7 @@ class Users_model extends MY_Model
     }
     function get_all()
     {
-        $this->db->select("login_id, store_id, username")
+        $this->db->select("login_id, store_id, username,fname,lname")
             ->from($this->tbl)
             ->where('is_deleted', '0')
             ->order_by('username');
@@ -45,8 +45,12 @@ class Users_model extends MY_Model
     {
         $query = "SELECT
                   lg.login_id,
-                  lg.username
+                  lg.username,
+                  lg.fname,
+                  lg.lname,
+                  st.name as store_name
                  FROM tbl_login as lg
+                 LEFT JOIN tbl_stores st  ON st.id = lg.store_id
                  WHERE lg.is_deleted='0' ";
 
         $totalCol = $this->input->post('iColumns');
@@ -80,5 +84,18 @@ class Users_model extends MY_Model
         ));
 
         return $resData;
+    }
+
+    public function getStoreID($userID)
+    {
+        $query = "SELECT ur.store_id 
+        FROM tbl_login ur 
+        WHERE login_id = $userID";
+        $result = $this->db->query($query);
+        $userid = [];
+        foreach ($result->result_array() as $row) {
+            $userid[] = $row;
+        }
+        return $userid[0]['store_id'];
     }
 }

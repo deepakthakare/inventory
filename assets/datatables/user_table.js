@@ -22,7 +22,13 @@ $(document).ready(function () {
 			});
 			aoData.push({ name: "columns", value: columns });
 		},
-		columns: [{ data: "login_id" }, { data: "username" }],
+		columns: [
+			{ data: "login_id" },
+			{ data: "username" },
+			{ data: "fname" },
+			{ data: "lname" },
+			{ data: "store_name" },
+		],
 		order: [[0, "desc"]],
 		lengthMenu: [
 			[10, 25, 50, 100],

@@ -94,16 +94,19 @@ $(document).ready(function () {
 				render: function (data, type, row) {
 					let status =
 						row.shopi_status === "Pushed"
-							? '<button type="button" class="btn btn-success btn-sm" title="Pushed to ' +
-							  DOMAIN +
-							  ' Website">' +
+							? '<button type="button" class="btn btn-success btn-sm" title="Pushed on ' +
+							  row.store_name +
+							  ' ">' +
 							  row.shopi_status +
 							  " </button>"
-							: '<button type="button" class="btn btn-warning btn-sm" title="Not Pushed to ' +
+							: '<button type="button" class="btn btn-warning btn-sm" title="Not Pushed on ' +
 							  DOMAIN +
 							  ' Website.">' +
-							  row.shopi_status +
-							  "</button>";
+							  (row.shopi_status == null)
+							? '<button type="button" class="btn btn-warning btn-sm" title="Pushed on ' +
+							  row.store_name +
+							  '">Pending</button>'
+							: "" + "</button>";
 					return status;
 				}, ///
 				targets: $("#myTable th#status").index(),
@@ -128,7 +131,7 @@ $(document).ready(function () {
 						' id="btnPush" onclick="pushToShopify(' +
 						prdID +
 						"," +
-						row.shopify_id +
+						row.shopi_product_id +
 						');"><i class="fa-solid fa-cloud-arrow-up"></i></a>'
 					);
 				},
@@ -246,8 +249,8 @@ $(document).ready(function () {
 	});
 });
 
-const pushToShopify = (prod_id, shopiID) => {
-	if (shopiID !== 0) {
+const pushToShopify = (prod_id, shopiID, storeID) => {
+	if (shopiID !== null) {
 		swal("Product Already Created!", "", "warning");
 	} else {
 		swal(
@@ -277,7 +280,7 @@ const pushToShopify = (prod_id, shopiID) => {
 									swal("Created!", "Product successfully created!.", "success");
 									var myTable = $("#myTable").DataTable();
 									myTable.ajax.reload(null, false);
-								}, 6000);
+								}, 4000);
 							}
 						})
 						.fail(function () {

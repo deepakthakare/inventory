@@ -8,6 +8,7 @@ class Users extends Admin_Controller
     function __construct()
     {
         parent::__construct();
+        $this->load->model('stores/stores_model');
         $this->load->model('users_model');
         $this->load->library('form_validation');
         $this->load->library('breadcrumbs');
@@ -41,10 +42,13 @@ class Users extends Admin_Controller
             'button' => 'Add',
             'action' => admin_url('users/add_users'),
             'login_id' => set_value(''),
-            'username' => set_value(''),
+            'username' => set_value('username'),
+            'fname' => set_value('fname'),
+            'lname' => set_value('lname'),
             'password' => set_value(''),
-            'store_id' => set_value(''),
+
         );
+        $data['stores_list'] = $this->stores_model->get_all();
         $this->layout->view_render('add', $data);
     }
 
@@ -59,10 +63,14 @@ class Users extends Admin_Controller
             $data = array(
                 'username' => $username,
                 'password' => $password,
+                'store_id' => $this->input->post('store_name', TRUE),
+                'fname' => $this->input->post('fname', TRUE),
+                'lname' => $this->input->post('lname', TRUE),
             );
-
+            /* print_r($data);
+            die; */
             $result = $this->users_model->add($data);
-            print_r($result);
+
             if ($result == true) {
                 $this->activity_model->add(array('login_id' => $this->login_id, 'activity' => ucfirst($this->username) . ' added a store at ' . date("M d, Y H:i")));
                 $this->session->set_flashdata(array('message' => 'User Added Successfully', 'type' => 'success'));
@@ -83,16 +91,36 @@ class Users extends Admin_Controller
 
     public function edit($id)
     {
-        // $this->layout->add_js('../public/pekeupload/js/pekeUpload.js');
         if (check_post()) {
-            $this->_rules();
+            $this->_rulesEdit();
             if ($this->form_validation->run() == FALSE) {
                 redirectToAdmin('users/edit/' . $id);
             }
             $name = $this->input->post('username', TRUE);
+            $password = $this->password_hash($this->input->post('password', TRUE));
             $login_id = $this->input->post('login_id', TRUE);
-            $data_to_update = array('username' => $name, 'updated_at' => date("Y-m-d h:i:s"));
+            $firstname = $this->input->post('fname', TRUE);
+            $lastname = $this->input->post('lname', TRUE);
+            if (empty($this->input->post('password'))) {
+                $data_to_update =
+                    array(
+                        'fname' => $firstname,
+                        'lname' => $lastname,
+                        'updated_at' => date("Y-m-d h:i:s")
+                    );
+            } else {
+                $data_to_update =
+                    array(
 
+                        'username' => $name,
+                        'fname' => $firstname,
+                        'lname' => $lastname,
+                        'password' => $password,
+                        'updated_at' => date("Y-m-d h:i:s")
+                    );
+            }
+            /*  print_r($data_to_update);
+            die; */
             $result = $this->users_model->edit($login_id, $data_to_update);
             if ($result) {
                 $this->session->set_flashdata(array('message' => 'Users updated Successfully', 'type' => 'success'));
@@ -107,9 +135,13 @@ class Users extends Admin_Controller
                     'button' => 'Update',
                     'action' => admin_url('users/edit/' . $row->login_id),
                     'login_id' => set_value('login_id', $row->login_id),
-                    // 'image_path' => set_value('image_path', $row->image_path),
-                    'username' => set_value('username', $row->username)
+                    'store_id' => set_value('store_id', $row->store_id),
+                    'fname' => set_value('fname', $row->fname),
+                    'lname' => set_value('lname', $row->lname),
+                    'username' => set_value('username', $row->username),
+                    'password' => $this->password_hash(set_value('password', $row->password)),
                 );
+                $data['stores_list'] = $this->stores_model->get_all();
                 $this->layout->view_render('add', $data);
             } else {
                 $this->session->set_flashdata(array('message' => 'No Records Found', 'type' => 'warning'));
@@ -118,12 +150,35 @@ class Users extends Admin_Controller
         }
     }
 
+    public function delete()
+    {
+        $login_id = $this->input->post('login_id');
+        $result = $this->users_model->edit($login_id, array('is_deleted' => '1', 'updated_at' => date("Y-m-d h:i:s")));
+        if ($result) {
+            $this->activity_model->add(array('login_id' => $this->login_id, 'activity' => ucfirst($this->username) . ' deleted a user at ' . date("M d, Y H:i")));
+            echo json_encode(array('message' => 'User deleted Successfully', 'type' => 'success'));
+        } else {
+            echo json_encode(array('message' => 'Something went wrong', 'type' => 'warning'));
+        }
+    }
 
+
+    // For add User
     public function _rules()
     {
-        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]');
+        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]|is_unique[tbl_login.username]');
         $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[12]');
-        //$this->form_validation->set_rules('stores', 'Store', 'required');
+        $this->form_validation->set_rules('store_name', 'Store', 'required');
+        $this->form_validation->set_rules('fname', 'First Name', 'required');
+        $this->form_validation->set_rules('lname', 'Last Name', 'required');
+        $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span><br/>');
+    }
+
+    //for edit User
+    public function _rulesEdit()
+    {
+        $this->form_validation->set_rules('fname', 'First Name', 'required');
+        $this->form_validation->set_rules('lname', 'Last Name', 'required');
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span><br/>');
     }
 }

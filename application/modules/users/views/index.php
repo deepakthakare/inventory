@@ -18,9 +18,11 @@
           <table class="table table-hover table-bordered" id="myTable">
             <thead style="background: #7474e9;color:#fff">
               <tr>
-                <th width="20%">Id</th>
-                <th width="35%">Username</th>
-                <th width="35%">Store</th>
+                <th width="10%">Id</th>
+                <th width="20%">Username</th>
+                <th width="20%">First Name</th>
+                <th width="20%">Last Name</th>
+                <th width="20%">Store</th>
                 <th id="action" width="10%">Action</th>
               </tr>
             </thead>

@@ -34,6 +34,8 @@ defined('DIR_WRITE_MODE')  or define('DIR_WRITE_MODE', 0755);
 // Shopify APP API Key. Added by deepak
 defined('SHOPIFY_API_KEY')  or define('SHOPIFY_API_KEY', 'https://912040110b75e3b1ce4fe721c626ff6d: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@isuf-una.myshopify.com');
 
+defined('SHOPIFY_API_KEY_BGF')  or define('SHOPIFY_API_KEY_BGF', 'https://279bd0e5fdceea5d4bbcd68a86cd589e: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@bgf-isuf.myshopify.com');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -89,7 +91,7 @@ defined('EXIT__AUTO_MIN')      or define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      or define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 //custom constant
-define('COMPANY_NAME', 'Inventory Management');
+define('COMPANY_NAME', 'Product Management');
 define('COMPANY_NICK_NAME', 'IM');
-define('PROJECT_TITLE', 'Inventory Management');
+define('PROJECT_TITLE', 'Product Management');
 define('ADMIN_URL_PREFIX', 'administrator');
