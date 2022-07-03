@@ -166,7 +166,7 @@ class Users extends Admin_Controller
     // For add User
     public function _rules()
     {
-        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]|is_unique[tbl_login.username]');
+        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[4]|max_length[12]|is_unique[tbl_login.username]');
         $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[12]');
         $this->form_validation->set_rules('store_name', 'Store', 'required');
         $this->form_validation->set_rules('fname', 'First Name', 'required');

@@ -52,6 +52,8 @@ class Orders_model extends MY_Model
         $query .= " LIMIT $start,$page_length";
         $result = $this->db->query($query);
         $data = $result->result();
+        /*  echo "<pre>";
+        print_r($data); */
         $resData = json_encode(array(
             "aaData" => $data,
             "iTotalDisplayRecords" => $totalRecords,

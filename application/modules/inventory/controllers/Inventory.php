@@ -79,7 +79,7 @@ class Inventory extends Admin_Controller
       foreach ($records as $rows) {
         $readonly = ($rows->attributes_id == 1) ? 'readonly' : '';
         $sellPrice = $rows->p_price + $rows->p_price * ($rows->tax_rate / 100);
-        $viewBtn = anchor(site_url('inventor/view/' . urlencode(base64_encode($rows->prod_price_id))), 'View', array('class' => 'btn btn-primary btn-sm')) . "&nbsp;";
+        $viewBtn = anchor(site_url('inventory/view/' . urlencode(base64_encode($rows->prod_price_id))), 'View', array('class' => 'btn btn-primary btn-sm')) . "&nbsp;";
         if ($rows->image_path) {
           $image = "<img src='$rows->image_path' width='50' height='50' id='btnImgpop' data-image_path='$rows->image_path' />";
         } else {

@@ -27,12 +27,14 @@ class Login_model extends CI_Model
         if ($query->num_rows() == 1) {
             $row = $query->row();
             $id = $row->login_id;
+            $store_id = $row->store_id;
             $username = $row->username;
             $hash_password = password_verify($password, $row->password);
             if ($hash_password === true) {
                 $data = array(
                     "username" => $username,
                     "login_id" => $id,
+                    "store_id" => $store_id,
                     "admin_logged_in" => true,
                     "isadmin" => true
                 );

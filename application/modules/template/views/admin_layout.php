@@ -55,7 +55,11 @@
         <div class="sidebar-brand-icon rotate-n-15">
           <!-- <i class="fas fa-laugh-wink"></i> add your logo-->
         </div>
-        <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logo.png" width="50" /></div>
+        <?php if ($admin_user['store_id'] == 1) { ?>
+          <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logoIFIF.png" width="50" /></div>
+        <?php } elseif ($admin_user['store_id'] == 2) { ?>
+          <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logoRedHot.png" width="150" /></div>
+        <?php } ?>
       </a>
 
       <!-- Divider -->
@@ -215,8 +219,15 @@
                 } else {
                   echo 'class="collapse-item"';
                 } ?> href="<?= admin_url('inventory') ?>">Inventory</a>
+            <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                  echo 'class="collapse-item active"';
+                } else {
+                  echo 'class="collapse-item"';
+                } ?> href="<?= admin_url('stocks') ?>">Live Stocks</a>
           </div>
         </div>
+
+
       </li>
 
       <!-- Start Stores Code -->
