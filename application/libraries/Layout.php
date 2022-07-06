@@ -156,6 +156,16 @@ class Layout
         if ($layout != '') $this->_layout = $layout;
     }
 
+    public function switch_layout_data($layout, $data = null)
+    {
+        if ($layout != '') {
+            $this->_layout = $layout;
+            $this->_CI->load->view($this->_layout, $data, true);
+        }
+    }
+
+
+
     /*
      * change JS asset path
      * */

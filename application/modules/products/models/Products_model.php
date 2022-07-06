@@ -113,21 +113,6 @@ class Products_model extends MY_Model
   }
   function get_products($storeID)
   {
-    /*  $query = "SELECT
-                  tp.prod_id,
-                  tp.image_path,
-                  tp.name,
-                  tp.prd_barcode,
-                  (select sum(pa.inventory) FROM tbl_product_price pa where pa.attributes_id = 4 and pa.is_deleted='0' and tp.prod_id = pa.prod_id) as inventory,
-                  spd.shopi_product_id,
-                  lg.store_id,
-                  (CASE WHEN spd.shopi_product_id <> 0 THEN 'Pushed'
-                     WHEN spd.shopi_product_id IS NULL THEN 'Pending'
-                  END) AS shopi_status
-                 FROM tbl_products as tp
-                LEFT JOIN tbl_shopify_product_details spd ON spd.prod_id = tp.prod_id
-                LEFT JOIN tbl_login lg ON lg.login_id = $userID
-                 WHERE tp.is_deleted='0' "; */
     $query = "SELECT tp.prod_id,
                     tp.image_path,
                     tp.name,

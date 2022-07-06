@@ -9,6 +9,7 @@ class Users extends Admin_Controller
     {
         parent::__construct();
         $this->load->model('stores/stores_model');
+        $this->load->model('groups/groups_model');
         $this->load->model('users_model');
         $this->load->library('form_validation');
         $this->load->library('breadcrumbs');
@@ -49,7 +50,10 @@ class Users extends Admin_Controller
 
         );
         $data['stores_list'] = $this->stores_model->get_all();
+        $data['groups_list'] = $this->groups_model->getGroupData();
         $this->layout->view_render('add', $data);
+        // echo "<pre>";
+        // print_r($data);
     }
 
     public function add_users()
@@ -99,6 +103,7 @@ class Users extends Admin_Controller
             $name = $this->input->post('username', TRUE);
             $password = $this->password_hash($this->input->post('password', TRUE));
             $login_id = $this->input->post('login_id', TRUE);
+            $group_name = $this->input->post('group_name', TRUE);
             $firstname = $this->input->post('fname', TRUE);
             $lastname = $this->input->post('lname', TRUE);
             if (empty($this->input->post('password'))) {
@@ -106,6 +111,7 @@ class Users extends Admin_Controller
                     array(
                         'fname' => $firstname,
                         'lname' => $lastname,
+                        'group_id' => $group_name,
                         'updated_at' => date("Y-m-d h:i:s")
                     );
             } else {
@@ -116,10 +122,11 @@ class Users extends Admin_Controller
                         'fname' => $firstname,
                         'lname' => $lastname,
                         'password' => $password,
+                        'group_id' => $group_name,
                         'updated_at' => date("Y-m-d h:i:s")
                     );
             }
-            /*  print_r($data_to_update);
+            /* print_r($data_to_update);
             die; */
             $result = $this->users_model->edit($login_id, $data_to_update);
             if ($result) {
@@ -136,12 +143,14 @@ class Users extends Admin_Controller
                     'action' => admin_url('users/edit/' . $row->login_id),
                     'login_id' => set_value('login_id', $row->login_id),
                     'store_id' => set_value('store_id', $row->store_id),
+                    'group_id' => set_value('group_id', $row->group_id),
                     'fname' => set_value('fname', $row->fname),
                     'lname' => set_value('lname', $row->lname),
                     'username' => set_value('username', $row->username),
                     'password' => $this->password_hash(set_value('password', $row->password)),
                 );
                 $data['stores_list'] = $this->stores_model->get_all();
+                $data['groups_list'] = $this->groups_model->getGroupData();
                 $this->layout->view_render('add', $data);
             } else {
                 $this->session->set_flashdata(array('message' => 'No Records Found', 'type' => 'warning'));
@@ -169,6 +178,7 @@ class Users extends Admin_Controller
         $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[4]|max_length[12]|is_unique[tbl_login.username]');
         $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[12]');
         $this->form_validation->set_rules('store_name', 'Store', 'required');
+        $this->form_validation->set_rules('group_name', 'Group', 'required');
         $this->form_validation->set_rules('fname', 'First Name', 'required');
         $this->form_validation->set_rules('lname', 'Last Name', 'required');
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span><br/>');

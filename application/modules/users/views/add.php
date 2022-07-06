@@ -14,9 +14,25 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
+                                <label>Groups:</label>
+                                <select class="form-control" name="group_name" id="group_name">
+                                    <option value="">Please Select Group Name</option>
+                                    <?php foreach ($groups_list as $key => $group) { ?>
+                                        <?php if ($button != 'Update') { ?>
+                                            <option value="<?= $group['id'] ?>"><?= $group["group_name"] ?></option> <?php } else { ?>
+                                            <option value="<?= $group['id'] ?>" <?php if ($group_id === $group['id']) {
+                                                                                                                            echo 'selected';
+                                                                                                                        } ?>>
+                                                <?= $group['group_name'] ?></option>
+                                        <?php } ?>
+                                    <?php } ?>
+                                </select>
+                                <?php echo form_error('group_name') ?>
+                            </div>
+                            <div class="form-group">
                                 <label>Stores:</label>
                                 <select class="form-control" name="store_name" id="store_name" <?= $readonly ?>>
-                                    <option value="">Please Select</option>
+                                    <option value="">Please Select Store Name</option>
                                     <?php foreach ($stores_list as $key => $store) { ?>
                                         <?php if ($button != 'Update') {; ?>
                                             <option value="<?= $store->id ?>"><?= $store->name ?></option> <?php } else { ?>
