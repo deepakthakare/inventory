@@ -298,7 +298,7 @@
               <i class="fa-solid fa-users"></i>
               <span>Groups</span>
             </a>
-            <div id="collapseGroups" <?php if ($this->router->class == "users") {
+            <div id="collapseGroups" <?php if ($this->router->class == "groups") {
                                         echo 'class="collapse show"';
                                       } else {
                                         echo 'class="collapse"';
@@ -346,8 +346,36 @@
             </div>
           </li>
         <?php } ?>
-      <?php } ?>
 
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <!-- Heading -->
+        <!-- <div class="sidebar-heading">
+        Statistics
+      </div> -->
+        <?php if (in_array('viewStatistics', $user_permission)) { ?>
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStatistics" aria-expanded="true" aria-controls="collapseTwo">
+              <i class="fas fa-server"></i>
+              <span>Statistics</span>
+            </a>
+            <div id="collapseStatistics" <?php if ($this->router->class == "statistics") {
+                                            echo 'class="collapse show"';
+                                          } else {
+                                            echo 'class="collapse"';
+                                          } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('statistics') ?>">Statistics List</a>
+              </div>
+            </div>
+          </li>
+        <?php } ?>
+      <?php } ?>
 
       <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">

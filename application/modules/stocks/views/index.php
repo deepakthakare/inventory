@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <script type="text/javascript">
+            <!--  <script type="text/javascript">
                 $(document).ready(function() {
 
                     $.extend($.fn.DataTable.ext.classes, {
@@ -185,7 +185,7 @@
                         });
                     });
                 });
-            </script>
+            </script> -->
 
             <!-- Card Body -->
             <div class="card-body">
@@ -193,6 +193,7 @@
                     <table class="table table-hover table-bordered" id="myTable">
                         <thead style="background: #7474e9;color:#fff">
                             <tr>
+                                <th></th>
                                 <th>ID</th>
                                 <th id="image">Image</th>
                                 <th>Name</th>

@@ -20,7 +20,7 @@ class Stocks extends Admin_Controller
     {
         $this->layout->set_title('Product List');
         $this->load_datatables();
-        //   $this->layout->add_js('../datatables/stocks_table.js');
+        $this->layout->add_js('../datatables/stocks_table.js');
         $this->breadcrumbs->admin_push('Dashboard', 'dashboard');
         $this->breadcrumbs->admin_push('Product List', 'stocks');
         $this->layout->view_render('index');

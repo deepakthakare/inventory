@@ -6,7 +6,7 @@ $(document).ready(function () {
 		bStateSave: true,
 		processing: true,
 		bPaginate: true,
-		//	serverSide: true,
+		serverSide: true,
 		bProcessing: true,
 		iDisplayLength: 10,
 		//	bServerSide: true,
@@ -22,6 +22,12 @@ $(document).ready(function () {
 			aoData.push({ name: "columns", value: columns });
 		},
 		columns: [
+			{
+				data: "",
+				render: function (data, type, row, meta) {
+					return '<input type="checkbox">';
+				},
+			},
 			{
 				data: "sr.no",
 				render: function (data, type, row, meta) {

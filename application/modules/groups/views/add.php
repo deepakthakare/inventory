@@ -112,6 +112,13 @@
                                     <td><input type="checkbox" name="permission[]" id="permission" value="viewReports" class="minimal"></td>
                                     <td> - </td>
                                 </tr>
+                                <tr>
+                                    <td>Statistics</td>
+                                    <td> - </td>
+                                    <td> - </td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="viewStatistics" class="minimal"></td>
+                                    <td> - </td>
+                                </tr>
                                 <!-- <tr>
                                     <td>Company</td>
                                     <td> - </td>

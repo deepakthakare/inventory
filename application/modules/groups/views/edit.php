@@ -266,6 +266,17 @@
                                                                                                                                         } ?>></td>
                                     <td> - </td>
                                 </tr>
+                                <tr>
+                                    <td>Statistics</td>
+                                    <td> - </td>
+                                    <td> - </td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" class="minimal" value="viewStatistics" <?php if ($serialize_permission) {
+                                                                                                                                                if (in_array('viewStatistics', $serialize_permission)) {
+                                                                                                                                                    echo "checked";
+                                                                                                                                                }
+                                                                                                                                            } ?>></td>
+                                    <td> - </td>
+                                </tr>
 
                             </tbody>
                         </table>
