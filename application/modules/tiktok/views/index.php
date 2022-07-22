@@ -59,35 +59,40 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <form id="frm-table" action="" method="POST">
-                        <table class="table table-hover table-bordered" id="myTable">
-                            <thead style="background: #7474e9;color:#fff">
-                                <tr>
-                                    <th><input name="select_all" value="1" type="checkbox"></th>
-                                    <th>Id</th>
-                                    <th id="image">Image</th>
-                                    <th>Name</th>
-                                    <th>Parent Barcode</th>
-                                    <th>Child Barcode</th>
-                                    <th>Stylecode</th>
-                                    <th>Attributes</th>
-                                    <th>Base Price</th>
-                                    <th width="80px" id="inventory">Selling Price</th>
-                                </tr>
-                            </thead>
-                        </table>
-                        <p><button>Submit</button></p>
+                        <div class="mg-top-20">
+                            <p>
+                                <button class="btn btn-success btn-sm btn-icon-split" style="float: right;margin-bottom: 15px;">
+                                    <span class="text">Export</span>
+                                    <span class="icon text-white-50"><i class="fas fa-download"></i></span>
+                                </button>
+                            </p>
 
-                        <p><b>Selected rows data:</b></p>
-                        <pre id="example-console-rows"></pre>
-
-                        <p><b>Form data as submitted to the server:</b></p>
-                        <pre id="example-console-form"></pre>
+                            <table class="table table-hover table-bordered" id="myTable">
+                                <thead style="background: #7474e9;color:#fff">
+                                    <tr>
+                                        <th><input name="select_all" value="1" type="checkbox"></th>
+                                        <th>Id</th>
+                                        <th id="image">Image</th>
+                                        <th>Name</th>
+                                        <th>Parent Barcode</th>
+                                        <th>Child Barcode</th>
+                                        <th>Stylecode</th>
+                                        <th>Attributes</th>
+                                        <th>Base Price</th>
+                                        <th width="80px" id="inventory">Selling Price</th>
+                                    </tr>
+                                </thead>
+                            </table>
                     </form>
-                </div>
 
+
+
+                </div>
             </div>
+
         </div>
     </div>
+</div>
 </div>
 
 <script type="text/javascript">
@@ -136,7 +141,7 @@
                     'className': 'text-center',
                     'render': function(data, type, full, meta) {
                         return '<input type="checkbox">';
-                    }
+                    },
                 },
                 {
                     "className": "dt-center",
@@ -283,15 +288,14 @@
 
         // Handle click on checkbox
         $('#myTable tbody').on('click', 'input[type="checkbox"]', function(e) {
-            // console.log('one')
             var $row = $(this).closest('tr');
 
             // Get row data
             var data = myTable.row($row).data();
-            const propertyNames = Object.values(data);
-            // console.log(propertyNames, 'data')
+            const checkboxIds = Object.values(data);
+
             // Get row ID
-            var rowId = propertyNames[0];
+            var rowId = checkboxIds[0];
             // console.log(rowId, 'data')
 
             // Determine whether row ID is in the list of selected row IDs
@@ -300,12 +304,12 @@
             // If checkbox is checked and row ID is not in list of selected row IDs
             if (this.checked && index === -1) {
                 rows_selected.push(rowId);
-                //console.log(rows_selected, '1')
+
 
                 // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
             } else if (!this.checked && index !== -1) {
                 rows_selected.splice(index, 1);
-                // console.log(rows_selected, '2')
+
             }
 
             if (this.checked) {
@@ -341,7 +345,6 @@
 
         // Handle table draw event
         myTable.on('draw', function() {
-            console.log('four')
             // Update state of "Select all" control
             updateDataTableSelectAllCtrl(myTable);
         });
@@ -349,10 +352,8 @@
         // Handle form submission event
         $('#frm-table').on('submit', function(e) {
             // Prevent actual form submission
-            e.preventDefault();
+            //  e.preventDefault();
             var form = this;
-            //  var rows_selected = myTable.column(0).checkboxes.selected();
-            // console.log("Form submission", rows_selected.join(","));
             // Iterate over all selected checkboxes
             $.each(rows_selected, function(index, rowId) {
                 // Create a hidden element
@@ -364,14 +365,16 @@
                 );
             });
             // Output form data to a console 
-            $('#example-console-form').text($(form).serialize());
-            $('#example-console-rows').text(rows_selected.join(","));
-
+            /* $('#example-console-form').text($(form).serialize());
+             $('#example-console-rows').text(rows_selected.join(","));
+ */
+            let product_ids = JSON.parse(JSON.stringify(rows_selected.join(",")))
             // Remove added elements
             $('input[name="id\[\]"]', form).remove();
-            let product_ids = JSON.parse(JSON.stringify(rows_selected.join(",")))
-            //console.log(product_ids, 'ffff')
+
+
             // Send ID to controllers
+            e.preventDefault();
             $.ajax({
                 type: "POST",
                 url: ADMIN_URL + "tiktok/getExportProducts",
@@ -379,14 +382,20 @@
                     product_ids: product_ids,
                 },
                 success: function(data) {
-                    //	console.log(data, "data");
-                    $("#product_variants").html(data);
+                    let downloadLink = document.createElement("a");
+                    let fileData = ['\ufeff' + data];
+                    var blobObject = new Blob(fileData, {
+                        type: "text/csv;charset=utf-8;"
+                    });
+                    let url = URL.createObjectURL(blobObject);
+                    downloadLink.href = url;
+                    downloadLink.download = "tiktokProducts.csv";
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+
                 },
             });
-
-            // Prevent actual form submission
-            e.preventDefault();
-
         });
 
     });

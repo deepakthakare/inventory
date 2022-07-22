@@ -184,7 +184,40 @@ class Tiktok_model extends MY_Model
     }
     function exportProducts($ids)
     {
-        $query = "";
+
+        $query = "SELECT
+        '' as category,
+        '' as brand,
+        p.name,
+        p.description,
+        p.weight,
+        '' as length,
+        '' as width,
+        '' as height,
+        '' as delivery_option,
+        tpp.stylecode as identifier_code_type,
+        '' as identifier_code,
+        '' as identifier_code,
+        tk.color,
+        p.image_path,
+        tk.size,
+        tk.selling_price,
+        tpp.inventory as quantity,
+        tpp.barcode as sku,
+        '' as warranty_period,
+        p.image_path as image,
+        '' as image2,
+        '' as image3,
+        '' as image4,
+        '' as image5,
+        '' as image6,
+        '' as image7,
+        '' as image8,
+        '' as image9
+        FROM `tbl_tiktok_products` tk
+        LEFT JOIN tbl_products p ON tk.id_product = p.prod_id
+        LEFT JOIN tbl_product_price tpp ON tpp.prod_price_id = tk.prod_price_id
+        Where tpp.is_deleted = 0 AND tk.prod_price_id IN ($ids)";
         return $this->db->query($query)->result('array');
     }
 }

@@ -18,7 +18,6 @@ class Tiktok extends Admin_Controller
         $this->layout->set_title('Product Details');
         $this->load_datatables();
         //$this->layout->add_js('../datatables/tiktok_table.js');
-        // $this->layout->add_js('../datatables/stocks_table.js');
         $this->breadcrumbs->admin_push('Dashboard', 'dashboard');
         $this->breadcrumbs->admin_push('Tiktok Product Datails', 'tiktok');
         $this->layout->view_render('index');
@@ -127,7 +126,48 @@ class Tiktok extends Admin_Controller
     }
     public function getExportProducts()
     {
-        $ids = $this->tiktok_model->exportProducts($this->input->post('product_ids'));
+        //$ids = $this->input->post('product_ids');
+        // $this->exportP($ids);
+        $productResult = $this->tiktok_model->exportProducts($this->input->post('product_ids'));
+        // echo "<pre>";
+        // print_r($result);
+        //echo $productResult;
+        $filename = "Tiktok_excel.xls";
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        $isPrintHeader = false;
+        if (!empty($productResult)) {
+            foreach ($productResult as $row) {
+                if (!$isPrintHeader) {
+                    echo implode(";", array_keys($row)) . "\n";
+                    $isPrintHeader = true;
+                }
+                echo implode(";", array_values($row)) . "\n";
+            }
+        }
+        exit();
+    }
+
+    public function exportP($ids)
+    {
+        $productResult = $this->tiktok_model->exportProducts($ids);
+        // print_r($result);
+        $filename = "Tiktok_excel.xls";
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        $isPrintHeader = false;
+        if (!empty($productResult)) {
+            foreach ($productResult as $row) {
+                if (!$isPrintHeader) {
+                    echo implode("\t", array_keys($row)) . "\n";
+                    $isPrintHeader = true;
+                }
+                echo implode("\t", array_values($row)) . "\n";
+            }
+        }
+        exit();
     }
     public function _rules()
     {
