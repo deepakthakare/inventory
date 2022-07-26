@@ -28,6 +28,7 @@ $(document).ready(function () {
 			{ data: "fname" },
 			{ data: "lname" },
 			{ data: "store_name" },
+			{ data: "group_name" },
 		],
 		order: [[0, "desc"]],
 		lengthMenu: [

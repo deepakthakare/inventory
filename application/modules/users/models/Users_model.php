@@ -20,7 +20,7 @@ class Users_model extends MY_Model
     }
     function get_all()
     {
-        $this->db->select("login_id, store_id, username,fname,lname")
+        $this->db->select("login_id, store_id, username, fname, lname")
             ->from($this->tbl)
             ->where('is_deleted', '0')
             ->order_by('username');
@@ -48,9 +48,11 @@ class Users_model extends MY_Model
                   lg.username,
                   lg.fname,
                   lg.lname,
-                  st.name as store_name
+                  st.name as store_name,
+                  g.group_name
                  FROM tbl_login as lg
                  LEFT JOIN tbl_stores st  ON st.id = lg.store_id
+                 LEFT JOIN tbl_groups g ON g.id = lg.group_id
                  WHERE lg.is_deleted='0' ";
 
         $totalCol = $this->input->post('iColumns');

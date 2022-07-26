@@ -59,6 +59,9 @@
           <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logoIFIF.png" width="50" /></div>
         <?php } elseif ($admin_user['store_id'] == 2) { ?>
           <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logoRedHot.png" width="150" /></div>
+        <?php } else { ?>
+          <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logo-bgf.png" width="150" /></div>
+
         <?php } ?>
       </a>
 
@@ -88,6 +91,34 @@
       print_r($user_permission); */
       ?>
       <?php if ($user_permission) { ?>
+        <?php if (in_array('createProduct', $user_permission) || in_array('updateProduct', $user_permission) || in_array('viewProduct', $user_permission) || in_array('deleteProduct', $user_permission)) { ?>
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProducts" aria-expanded="true" aria-controls="collapseTwo">
+              <i class="fab fa-product-hunt"></i>
+              <span>Products</span>
+            </a>
+            <div id="collapseProducts" <?php if ($this->router->class == "products") {
+                                          echo 'class="collapse show"';
+                                        } else {
+                                          echo 'class="collapse"';
+                                        } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('products') ?>">Product List</a>
+                <!-- Tiktok Product List -->
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('tiktok') ?>">Tiktok Product List</a>
+
+              </div>
+            </div>
+          </li>
+        <?php } ?>
         <?php if (in_array('createCategory', $user_permission) || in_array('updateCategory', $user_permission) || in_array('viewCategory', $user_permission) || in_array('deleteCategory', $user_permission)) { ?>
           <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCategory" aria-expanded="true" aria-controls="collapseTwo">
@@ -161,28 +192,7 @@
             </div>
           </li>
         <?php } ?>
-        <?php if (in_array('createProduct', $user_permission) || in_array('updateProduct', $user_permission) || in_array('viewProduct', $user_permission) || in_array('deleteProduct', $user_permission)) { ?>
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProducts" aria-expanded="true" aria-controls="collapseTwo">
-              <i class="fab fa-product-hunt"></i>
-              <span>Products</span>
-            </a>
-            <div id="collapseProducts" <?php if ($this->router->class == "products") {
-                                          echo 'class="collapse show"';
-                                        } else {
-                                          echo 'class="collapse"';
-                                        } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-              <div class="bg-white py-2 collapse-inner rounded">
-                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
-                      echo 'class="collapse-item active"';
-                    } else {
-                      echo 'class="collapse-item"';
-                    } ?> href="<?= admin_url('products') ?>">Product List</a>
 
-              </div>
-            </div>
-          </li>
-        <?php } ?>
         <?php if (in_array('createOrder', $user_permission) || in_array('updateOrder', $user_permission) || in_array('viewOrder', $user_permission) || in_array('deleteOrder', $user_permission)) { ?>
           <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSales" aria-expanded="true" aria-controls="collapseTwo">

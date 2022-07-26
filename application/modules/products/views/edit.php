@@ -136,7 +136,22 @@
             </div>
 
           </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <label>Category:</label>
+              <select class="form-control" name="product_category" id="product_category">
+                <option value="">Please Select</option>
+                <?php foreach ($category_list as $key => $category) { ?>
+                  <option <?php if ($category->category_id == $edit_data[0]->category_id) {
+                            echo "selected";
+                          } ?> value="<?= $category->category_id ?>"><?= $category->name ?></option>
+                <?php } ?>
+              </select>
+              <?php echo form_error('product_category') ?>
+            </div>
 
+          </div>
+          <p><br></p>
           <div class="row">
             <div class=" col-md-6 form-group">
               <label for="varchar">Upload Image <?php echo form_error('picture') ?></label>

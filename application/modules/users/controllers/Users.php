@@ -68,11 +68,11 @@ class Users extends Admin_Controller
                 'username' => $username,
                 'password' => $password,
                 'store_id' => $this->input->post('store_name', TRUE),
+                'group_id' => $this->input->post('group_name', TRUE),
                 'fname' => $this->input->post('fname', TRUE),
                 'lname' => $this->input->post('lname', TRUE),
             );
-            /* print_r($data);
-            die; */
+
             $result = $this->users_model->add($data);
 
             if ($result == true) {

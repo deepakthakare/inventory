@@ -10,6 +10,7 @@ class Products extends Admin_Controller
     $this->load->model('products_model');
     $this->load->model('attributes/attributes_model');
     $this->load->model('users/users_model');
+    $this->load->model('category/category_model');
     $this->load->library('form_validation');
     $this->load->library('breadcrumbs');
     $this->load->helper('fileUpload');
@@ -59,6 +60,7 @@ class Products extends Admin_Controller
     );
 
     $data['attributes_list'] = $this->attributes_model->get_all();
+    $data['category_list'] = $this->category_model->get_all();
     $data['prd_barcode'] = $this->barcodeGenerator();
     $this->layout->view_render('add', $data);
   }
@@ -76,6 +78,7 @@ class Products extends Admin_Controller
         'p_price' => $this->input->post('p_price', TRUE),
         'location' => $this->input->post('location', TRUE),
         'description' => $this->input->post('description', TRUE),
+        'category_id' => $this->input->post('product_category', TRUE),
       );
       if ($this->input->post("upload_image")) {
         $image = moveFile(1, $this->input->post("upload_image"), "image");
@@ -131,6 +134,7 @@ class Products extends Admin_Controller
 
       $data['edit_data'] = $row;
       $data['attributes_list'] = $this->attributes_model->get_all();
+      $data['category_list'] = $this->category_model->get_all();
       $this->layout->view_render('edit', $data);
     } else {
       $this->session->set_flashdata(array('message' => 'No Records Found', 'type' => 'warning'));
@@ -152,6 +156,7 @@ class Products extends Admin_Controller
       'location' => $this->input->post('location', TRUE),
       'weight' => $this->input->post('weight', TRUE),
       'description' => $this->input->post('description', TRUE),
+      'category_id' => $this->input->post('product_category', TRUE),
       'updated_at' => date("Y-m-d h:i:s")
     );
     if ($this->input->post("upload_image")) {
