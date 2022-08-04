@@ -270,6 +270,7 @@
                 var prod_price_id = $(this).attr('data-prod_price_id');
                 var prod_id = $(this).attr('data-id_product');
                 var attributes_value = $(this).attr('data-attributes_value');
+                var attributes_color = $(this).attr('data-attributes_color');
                 var new_selling_price = $(this).val();
                 var url = ADMIN_URL + 'tiktok/edit';
                 var param = {
@@ -277,6 +278,7 @@
                     new_selling_price: new_selling_price,
                     prod_id: prod_id,
                     attributes_value: attributes_value,
+                    attributes_color: attributes_color,
                 };
                 trigger_ajax(url, param).done(function(res) {
                     var res = JSON.parse(res);
@@ -385,21 +387,81 @@
                         product_ids: product_ids,
                     },
                     success: function(data) {
-                        let downloadLink = document.createElement("a");
+                        let jsonParsedArray = JSON.parse(data);
+                        console.log(jsonParsedArray)
+                      
+                        var csv = JSON2CSV(jsonParsedArray);
+                        var downloadLink = document.createElement("a");
+                        var blob = new Blob(["\ufeff", csv]);
+                        var url = URL.createObjectURL(blob);
+                        downloadLink.href = url;
+                        downloadLink.download = "data.csv";
+
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        document.body.removeChild(downloadLink)
+
+
+                        /* let downloadLink = document.createElement("a");
                         let fileData = ['\ufeff' + data];
                         var blobObject = new Blob(fileData, {
                             type: "text/csv;charset=utf-8;"
                         });
+                        let today = new Date().toISOString().slice(0, 10)
                         let url = URL.createObjectURL(blobObject);
                         downloadLink.href = url;
-                        downloadLink.download = "tiktokProducts.csv";
+                        downloadLink.download = "tiktokProducts" + today + ".csv";
                         document.body.appendChild(downloadLink);
                         downloadLink.click();
-                        document.body.removeChild(downloadLink);
+                        document.body.removeChild(downloadLink); */
 
                     },
                 });
             });
 
         });
+
+        function JSON2CSV(objArray) {
+            var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+            var str = '';
+            var line = '';
+            var headers = "category,brand,name,description,weight,length,width, height, delivery_option, identifier_code_type,	identifier_code, color,	image_path,	size,selling_price,	quantity, sku, warranty_period, image, image2,	image3,	image4,	image5,	image6,	image7,	image8,	image9\n";
+
+            if ($("#labels").is(':checked')) {
+                var head = array[0];
+                if ($("#quote").is(':checked')) {
+                    for (var index in array[0]) {
+                        var value = index + "";
+                        line += '"' + value.replace(/"/g, '""') + '",';
+                    }
+                } else {
+                    for (var index in array[0]) {
+                        line += index + ',';
+                    }
+                }
+
+                line = line.slice(0, -1);
+                str += line + '\r\n';
+            }
+
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+
+                if ($("#quote").is(':checked')) {
+                    for (var index in array[i]) {
+                        var value = array[i][index] + "";
+                        line += '"' + value.replace(/"/g, '""') + '",';
+                    }
+                } else {
+                    for (var index in array[i]) {
+                        line += array[i][index] + ',';
+                    }
+                }
+
+                line = line.slice(0, -1);
+                headers += str + line + '\r\n';
+              
+            }
+            return headers;
+        }
     </script>

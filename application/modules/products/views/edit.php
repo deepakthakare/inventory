@@ -168,8 +168,8 @@
           <div>
             <table class="table" id="tbl_attributes">
               <tr>
-                <th>Attribute</th>
-                <th>Attribute Value</th>
+                <th>Color</th>
+                <th>Size</th>
                 <th>StyleCode</th>
                 <th>Quantity</th>
                 <th>Barcode</th>
@@ -177,11 +177,11 @@
               </tr>
               <?php foreach ($edit_data as $key => $value) { ?>
                 <tr>
-                  <td><input type="hidden" class="form-control" readonly name="attributes[]" value="<?= $value->attributes_id; ?>">
+                  <td>
                     <input type="hidden" class="form-control" readonly name="prod_price_ids[]" value="<?= $value->prod_price_id; ?>">
-                    <input type="text" class="form-control" readonly name="attributes_text[]" value="<?= $value->attributes_name; ?>">
+                    <input type="text" class="form-control" readonly name="colors_value[]" value="<?= $value->color; ?>">
                   </td>
-                  <td><input type="text" class="form-control" readonly name="attributes_value[]" value="<?= $value->attributes_value; ?>"></td>
+                  <td><input type="text" class="form-control" readonly name="sizes_value[]" value="<?= $value->size; ?>"></td>
                   <td><input type="text" class="form-control" readonly name="stylecode[]" value="<?= $value->stylecode; ?>"></td>
                   <td><input type="text" class="form-control" name="inventory[]" value="<?= $value->inventory; ?>"></td>
                   <td><input type="text" class="form-control" readonly name="barcode[]" value="<?= $value->barcode; ?>"></td>
@@ -237,7 +237,7 @@
 
       <div class="modal-body">
         <div class="row">
-          <div class="col-sm-12">
+          <!-- <div class="col-sm-12">
             <div class="form-group">
               <label>Attribute:</label>
               <select class="form-control attributes" id="attributes">
@@ -253,6 +253,55 @@
             <div class="form-group">
               <label>Attribute Value:</label>
               <select class="form-control" id="attributes_value">
+                <option value="">Please Select</option>
+              </select>
+            </div>
+          </div> -->
+
+          <!-- Hide the Color and Size Dropdown for get the items -->
+          <div class="col-sm-12" style="display:none !important">
+            <div class="form-group">
+              <label>Color:</label>
+              <select class="form-control attributes" id="color">
+                <option value="">Please Select</option>
+                <?php foreach ($color_list as $key => $colors) {
+                  $attVal = ($colors->values); ?>
+                  <option data-color_values='<?= $attVal; ?>' value="<?= $colors->attributes_id ?>"><?= $colors->values ?></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-sm-12" style="display:none !important">
+            <div class="form-group">
+              <label>Size:</label>
+              <select class="form-control attributes" id="size">
+                <option value="">Please Select</option>
+                <?php foreach ($size_list as $key => $sizes) {
+                  $attVal = ($sizes->values); ?>
+                  <option data-size_values='<?= $attVal; ?>' value="<?= $sizes->attributes_id ?>"><?= $sizes->values ?></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <!-- end code hide the Color and Size Dropdown for get the items -->
+
+          <!-- Color -->
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>Color:</label>
+              <select class="form-control" id="colors_value">
+                <option value="">Please Select</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Size -->
+
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>Size:</label>
+              <select class="form-control" id="sizes_value">
                 <option value="">Please Select</option>
               </select>
             </div>

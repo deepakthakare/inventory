@@ -210,6 +210,21 @@
                                                                                                                                             } ?>></td>
                                 </tr>
                                 <tr>
+                                    <td>Tiktok Products</td>
+                                    <td> - </td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" class="minimal" value="updateTiktok" <?php if ($serialize_permission) {
+                                                                                                                                                if (in_array('updateTiktok', $serialize_permission)) {
+                                                                                                                                                    echo "checked";
+                                                                                                                                                }
+                                                                                                                                            } ?>></td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" class="minimal" value="viewTiktok" <?php if ($serialize_permission) {
+                                                                                                                                            if (in_array('viewTiktok', $serialize_permission)) {
+                                                                                                                                                echo "checked";
+                                                                                                                                            }
+                                                                                                                                        } ?>></td>
+                                   <td> - </td>
+                                </tr>
+                                <tr>
                                     <td>Orders</td>
                                     <td><input type="checkbox" name="permission[]" id="permission" class="minimal" value="createOrder" <?php if ($serialize_permission) {
                                                                                                                                             if (in_array('createOrder', $serialize_permission)) {

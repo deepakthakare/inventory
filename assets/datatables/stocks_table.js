@@ -87,4 +87,29 @@ $(document).ready(function () {
 	});
 
 	$(".dataTables_filter input").attr("placeholder", "Search...");
+
+	//Stock Update
+	$("#myTable").on('change', '.inventory_container', function() {
+		var variant_id = $(this).attr('data-variant_id');
+		var new_inventory = $(this).val();
+
+		var url = ADMIN_URL + 'stocks/edit';
+		var param = {
+			variant_id: variant_id,
+			new_inventory: new_inventory
+		};
+		console.log(param, "param");
+		trigger_ajax(url, param).done(function(res) {
+			var res = JSON.parse(res);
+			if (res['type'] === "success") {
+				var myTable = $('#myTable').DataTable();
+				// If you want totally refresh the datatable use this
+				// myTable.ajax.reload();
+				// If you want to refresh but keep the paging you can you this
+				myTable.ajax.reload(null, false);
+			}
+		}).fail(function() {
+			console.log("falied");
+		});
+	});
 });

@@ -133,7 +133,7 @@
           <div class="row">
             <div class="col-sm-6">
               <label>Category:</label>
-              <select class="form-control" name="product_category" id="product_category">
+              <select class="form-control selectpicker"  name="product_category" id="product_category" data-show-subtext="true"  data-live-search="true">
                 <option value="">Please Select</option>
                 <?php foreach ($category_list as $key => $category) { ?>
                   <option value="<?= $category->category_id ?>"><?= $category->name ?></option>
@@ -160,8 +160,8 @@
           <div>
             <table class="table" id="tbl_attributes">
               <tr>
-                <th>Attribute</th>
-                <th>Attribute Value</th>
+                <th>Color</th>
+                <th>Size</th>
                 <th>StyleCode</th>
                 <th>Quantity</th>
                 <th>Barcode</th>
@@ -214,7 +214,56 @@
 
       <div class="modal-body">
         <div class="row">
+          <!-- Hide the Color and Size Dropdown for get the items -->
+          <div class="col-sm-12" style="display:none !important">
+            <div class="form-group">
+              <label>Color:</label>
+              <select class="form-control attributes" id="color">
+                <option value="">Please Select</option>
+                <?php foreach ($color_list as $key => $colors) {
+                  $attVal = ($colors->values); ?>
+                  <option data-color_values='<?= $attVal; ?>' value="<?= $colors->attributes_id ?>"><?= $colors->values ?></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-sm-12" style="display:none !important">
+            <div class="form-group">
+              <label>Size:</label>
+              <select class="form-control attributes" id="size">
+                <option value="">Please Select</option>
+                <?php foreach ($size_list as $key => $sizes) {
+                  $attVal = ($sizes->values); ?>
+                  <option data-size_values='<?= $attVal; ?>' value="<?= $sizes->attributes_id ?>"><?= $sizes->values ?></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <!-- end code hide the Color and Size Dropdown for get the items -->
+
+          <!-- Color -->
           <div class="col-sm-12">
+            <div class="form-group">
+              <label>Color:</label>
+              <select class="form-control" id="colors_value">
+                <option value="">Please Select</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Size -->
+
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>Size:</label>
+              <select class="form-control" id="sizes_value">
+                <option value="">Please Select</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- <div class="col-sm-12">
             <div class="form-group">
               <label>Attribute:</label>
               <select class="form-control attributes" id="attributes">
@@ -231,17 +280,6 @@
               <label>Attribute Value:</label>
               <select class="form-control" id="attributes_value">
                 <option value="">Please Select</option>
-              </select>
-            </div>
-          </div>
-          <!-- <div class="col-sm-12">
-            <div class="form-group">
-              <label>Sold As:</label>
-              <select class="form-control" name="sold_as" id="sold_as">
-                <option value="">Please Select</option>
-                <?php foreach ($sold_as as $key => $soldas) { ?>
-                  <option value="<?= $soldas ?>"><?= $soldas ?></option>
-                <?php } ?>
               </select>
             </div>
           </div> -->
@@ -288,6 +326,10 @@
     </div><!-- modal-content -->
   </div><!-- modal-dialog -->
 </div><!-- modal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css" rel="stylesheet" />
 
 <script>
   $(document).ready(function($) {
@@ -302,4 +344,7 @@
     });
 
   });
+  $(function() {
+  $('.selectpicker').selectpicker();
+});
 </script>

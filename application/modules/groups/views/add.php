@@ -92,6 +92,13 @@
                                     <td><input type="checkbox" name="permission[]" id="permission" value="deleteProduct" class="minimal"></td>
                                 </tr>
                                 <tr>
+                                    <td>Tiktok Product</td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="createTiktok" class="minimal"></td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="updateTiktok" class="minimal"></td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="viewTiktok" class="minimal"></td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="deleteTiktok" class="minimal"></td>
+                                </tr>
+                                <tr>
                                     <td>Orders</td>
                                     <td><input type="checkbox" name="permission[]" id="permission" value="createOrder" class="minimal"></td>
                                     <td><input type="checkbox" name="permission[]" id="permission" value="updateOrder" class="minimal"></td>

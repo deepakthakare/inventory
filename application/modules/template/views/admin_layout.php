@@ -109,12 +109,13 @@
                       echo 'class="collapse-item"';
                     } ?> href="<?= admin_url('products') ?>">Product List</a>
                 <!-- Tiktok Product List -->
+                <?php if (in_array('createTiktok', $user_permission) || in_array('updateTiktok', $user_permission) || in_array('viewTiktok', $user_permission) || in_array('deleteTiktok', $user_permission)) { ?>
                 <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
                       echo 'class="collapse-item active"';
                     } else {
                       echo 'class="collapse-item"';
                     } ?> href="<?= admin_url('tiktok') ?>">Tiktok Product List</a>
-
+                <?php } ?>
               </div>
             </div>
           </li>

@@ -18,6 +18,8 @@ class Stocks_model extends MY_Model
             $url = SHOPIFY_API_KEY . '/admin/api/2022-04/variants.json';
         } elseif ($storeID == 2) {
             $url = SHOPIFY_API_KEY_BGF . '/admin/api/2022-04/variants.json';
+        } else {
+           // $url = SHOPIFY_API_KEY_BGF . '/admin/api/2022-04/variants.json';
         }
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -36,9 +38,13 @@ class Stocks_model extends MY_Model
         return $productArray;
     }
 
-    function tot_rows()
+    function tot_rows($storeID)
     {
+        if ($storeID == 1) {
         $url = SHOPIFY_API_KEY . '/admin/api/2022-04/variants/count.json';
+        } elseif ($storeID == 2){
+            $url = SHOPIFY_API_KEY_BGF . '/admin/api/2022-04/variants/count.json';
+        }
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,

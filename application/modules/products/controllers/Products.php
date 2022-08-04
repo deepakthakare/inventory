@@ -16,6 +16,9 @@ class Products extends Admin_Controller
     $this->load->helper('fileUpload');
     $this->layout->add_js('custom/product.js');
     // $this->config->load('config');
+    $this->storeData = $this->users_model->getStoreData($this->login_id);
+    $this->storeID = $this->storeData[0]['store_id'];
+    $this->groupID = $this->storeData[0]['group_id'];
   }
   public function index()
   {
@@ -28,15 +31,15 @@ class Products extends Admin_Controller
   }
   public function get_products()
   {
-    $storeID = $this->users_model->getStoreID($this->login_id);
-    echo  $this->products_model->get_products($storeID);
+    $storeData = $this->users_model->getStoreData($this->login_id);
+    echo $this->products_model->get_products($this->storeID, $this->groupID);
   }
   public function get_product_inventory()
   {
 
     $result = $this->products_model->get_product_inventory($this->input->post('prod_id'));
     if ($result) {
-      echo json_encode(array('message' => 'Inventory Data', 'type' => 'success', "data" => $result));
+      echo json_encode(array('message' => 'View Inventory Data', 'type' => 'success', "data" => $result));
     } else {
       echo json_encode(array('message' => 'Something went wrong', 'type' => 'warning'));
     }
@@ -48,6 +51,7 @@ class Products extends Admin_Controller
     $this->breadcrumbs->admin_push('Dashboard', 'dashboard');
     $this->breadcrumbs->admin_push('products List', 'products');
     $this->breadcrumbs->admin_push('Add products', 'products/add');
+
     $data = array(
       'button' => 'Add',
       'action' => admin_url('products/add_products'),
@@ -60,6 +64,8 @@ class Products extends Admin_Controller
     );
 
     $data['attributes_list'] = $this->attributes_model->get_all();
+    $data['color_list'] = $this->attributes_model->getColorList();
+    $data['size_list'] = $this->attributes_model->getSizeList();
     $data['category_list'] = $this->category_model->get_all();
     $data['prd_barcode'] = $this->barcodeGenerator();
     $this->layout->view_render('add', $data);
@@ -79,6 +85,7 @@ class Products extends Admin_Controller
         'location' => $this->input->post('location', TRUE),
         'description' => $this->input->post('description', TRUE),
         'category_id' => $this->input->post('product_category', TRUE),
+        'store_id' => $this->storeID,
       );
       if ($this->input->post("upload_image")) {
         $image = moveFile(1, $this->input->post("upload_image"), "image");
@@ -87,27 +94,31 @@ class Products extends Admin_Controller
 
       $result = $this->products_model->add($data);
 
-      $attributes = !empty($this->input->post('attributes')) ? $this->input->post('attributes') : "";
-      $attributes_value = !empty($this->input->post('attributes_value')) ? $this->input->post('attributes_value') : "";
+      $colors_value = !empty($this->input->post('colors_value')) ? $this->input->post('colors_value') : "";
+      $sizes_value = !empty($this->input->post('sizes_value')) ? $this->input->post('sizes_value') : "";
       $stylecode = !empty($this->input->post('stylecode')) ? $this->input->post('stylecode') : "";
       $inventory = !empty($this->input->post('inventory')) ? $this->input->post('inventory') : "";
       $barcode = !empty($this->input->post('barcode')) ? $this->input->post('barcode') : "";
-      if ($attributes) {
-        foreach ($attributes as $key => $value) {
+
+      if ($sizes_value) {
+        foreach ($sizes_value as $key => $value) {
           $attribute_data = array(
-            'attributes_id' => $attributes[$key],
-            'attributes_value' => $attributes_value[$key],
+            'color' => $colors_value[$key],
+            'size' => $sizes_value[$key],
             'prod_id' => $result,
             'stylecode' => $stylecode[$key],
             'inventory' => $inventory[$key],
             'barcode' => $barcode[$key]
           );
+          /*  echo "<pre>";
+          print_r($attribute_data);
+          die; */
           $this->products_model->add_price($attribute_data);
         }
       }
 
       if ($result) {
-        $this->activity_model->add(array('login_id' => $this->login_id, 'activity' => ucfirst($this->username) . ' adde a product at ' . date("M d, Y H:i")));
+        $this->activity_model->add(array('login_id' => $this->login_id, 'activity' => ucfirst($this->username) . ' added a product at ' . date("M d, Y H:i")));
         $this->session->set_flashdata(array('message' => 'Product Added Successfully', 'type' => 'success'));
       } else {
         $this->session->set_flashdata(array('message' => 'Something went wrong. Try again', 'type' => 'warning'));
@@ -133,7 +144,9 @@ class Products extends Admin_Controller
       );
 
       $data['edit_data'] = $row;
-      $data['attributes_list'] = $this->attributes_model->get_all();
+      // $data['attributes_list'] = $this->attributes_model->get_all();
+      $data['color_list'] = $this->attributes_model->getColorList();
+      $data['size_list'] = $this->attributes_model->getSizeList();
       $data['category_list'] = $this->category_model->get_all();
       $this->layout->view_render('edit', $data);
     } else {
@@ -167,17 +180,21 @@ class Products extends Admin_Controller
     $result = $this->products_model->edit($prod_id, $data_to_update);
 
     $prod_price_ids = !empty($this->input->post('prod_price_ids')) ? $this->input->post('prod_price_ids') : "";
-    $attributes = !empty($this->input->post('attributes')) ? $this->input->post('attributes') : "";
-    $attributes_value = !empty($this->input->post('attributes_value')) ? $this->input->post('attributes_value') : "";
+    // $attributes = !empty($this->input->post('attributes')) ? $this->input->post('attributes') : "";
+    // $attributes_value = !empty($this->input->post('attributes_value')) ? $this->input->post('attributes_value') : "";
+    $colors_value = !empty($this->input->post('colors_value')) ? $this->input->post('colors_value') : "";
+    $sizes_value = !empty($this->input->post('sizes_value')) ? $this->input->post('sizes_value') : "";
     $stylecode = !empty($this->input->post('stylecode')) ? $this->input->post('stylecode') : "";
     $inventory = !empty($this->input->post('inventory')) ? $this->input->post('inventory') : "";
     $barcode = !empty($this->input->post('barcode')) ? $this->input->post('barcode') : "";
-    if ($attributes) {
+    if ($sizes_value) {
       $this->products_model->update_price($prod_id);
-      foreach ($attributes as $key => $value) {
+      foreach ($sizes_value as $key => $value) {
         $attribute_data = array(
-          'attributes_id' => $attributes[$key],
-          'attributes_value' => $attributes_value[$key],
+          // 'attributes_id' => $attributes[$key],
+          // 'attributes_value' => $attributes_value[$key],
+          'color' => $colors_value[$key],
+          'size' => $sizes_value[$key],
           'stylecode' => $stylecode[$key],
           'inventory' => $inventory[$key],
           'updated_at' => date("Y-m-d h:i:s"),
@@ -218,13 +235,13 @@ class Products extends Admin_Controller
   public function push()
   {
     // echo SHOPIFY_API_KEY;
-    $storeID = $this->users_model->getStoreID($this->login_id);
+    $storeData = $this->users_model->getStoreData($this->login_id);
+    $storeID = $storeData[0]['store_id'];
     if ($storeID == 1) {
       $key = SHOPIFY_API_KEY . '/admin/products.json';
     } elseif ($storeID == 2) {
       $key = SHOPIFY_API_KEY_BGF . '/admin/products.json';
     }
-    //echo $key;
     $prod_id = $this->input->post('prod_id');
     $result = $this->products_model->createProductSHOPIFY($prod_id);
     $finalArray = $this->products_model->removeUselessArrays($result, 'variants');
@@ -267,8 +284,8 @@ class Products extends Admin_Controller
           'options' => $arrSplit[2] . "/" . $arrSplit[3],
           'barcode_variant' => $arrSplit[4],
         );
-        /* echo "<pre>";
-        print_r($data); */
+        // echo "<pre>";
+        // print_r($data);
         // $this->products_model->updateVariantID($prod_id, $arrSplit[0], $arrSplit[1]);
         $this->products_model->addProductData($data);
       }
@@ -280,7 +297,7 @@ class Products extends Admin_Controller
   public function _rules()
   {
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    $this->form_validation->set_rules('attributes[]', 'Product Attributes', 'trim|required');
+    $this->form_validation->set_rules('sizes_value[]', 'Product Size', 'trim|required');
     $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span><br/>');
   }
 

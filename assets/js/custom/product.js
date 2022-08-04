@@ -4,14 +4,16 @@
 $(document).ready(function () {
 	//add attributes
 	$("#btnAddNewAttributes").on("click", function () {
-		let attributes = $("#attributes option:selected").val();
-		let attributes_text = $("#attributes option:selected").text();
+		// let attributes = $("#attributes option:selected").val();
+		// let attributes_text = $("#attributes option:selected").text();
 		let attributes_value = $("#attributes_value option:selected").val();
+		let colors_value = $("#colors_value option:selected").val();
+		let sizes_value = $("#sizes_value option:selected").val();
 		let stylecode = $("#stylecode").val();
 		let inventory = $("#inventory").val();
 		let barcode = $("#barcode").val();
 
-		if (attributes == "" || attributes == null) {
+		/* if (attributes == "" || attributes == null) {
 			$("#attributes").focus();
 			if ($("#attributes").parent("div").find(".text-danger").length == 0) {
 				$("#attributes").after(
@@ -35,7 +37,32 @@ $(document).ready(function () {
 			return false;
 		} else {
 			$("#attributes_value").parent("div").find(".text-danger").remove();
+		} */
+
+		if (colors_value == "" || colors_value == null) {
+			$("#colors_value").focus();
+			if ($("#colors_value").parent("div").find(".text-danger").length == 0) {
+				$("#colors_value").after(
+					'<span class="text-danger">Select An Color Value.</span>'
+				);
+			}
+			return false;
+		} else {
+			$("#colors_value").parent("div").find(".text-danger").remove();
 		}
+
+		if (sizes_value == "" || sizes_value == null) {
+			$("#sizes_value").focus();
+			if ($("#sizes_value").parent("div").find(".text-danger").length == 0) {
+				$("#sizes_value").after(
+					'<span class="text-danger">Select An Size Value.</span>'
+				);
+			}
+			return false;
+		} else {
+			$("#sizes_value").parent("div").find(".text-danger").remove();
+		}
+
 		if (stylecode == "" || stylecode == null) {
 			$("#stylecode").focus();
 			if ($("#stylecode").parent("div").find(".text-danger").length == 0) {
@@ -62,14 +89,12 @@ $(document).ready(function () {
 
 		let new_row =
 			"<tr >" +
-			'<td><input type="hidden" class="form-control" readonly name="attributes[]" value="' +
-			attributes +
-			'"><input type="text" class="form-control" readonly name="attributes_text[]" value="' +
-			attributes_text +
-			'"></td>' +
-			'<td><input type="text" class="form-control"  readonly name="attributes_value[]" value="' +
-			attributes_value +
+			'<td><input type="text" class="form-control"  readonly name="colors_value[]" value="' +
+			colors_value +
 			'" ></td>' +
+			'<td><input type="text" class="form-control" readonly name="sizes_value[]" value="' +
+			sizes_value +
+			'"></td>' +
 			'<td><input type="text" class="form-control"  readonly name="stylecode[]" value="' +
 			stylecode +
 			'" ></td>' +
@@ -86,26 +111,50 @@ $(document).ready(function () {
 	});
 	//end of add attributes
 
-	$("#attributes").change(function () {
-		let attributes = $("#attributes option:selected").val();
-		if (attributes == "1" || attributes == null) {
-			$("#qtyDisplay").css("display", "none");
-			$("#inventory").val("0");
-			$("#barcode").val("999999999999");
-		} else {
-			$("#qtyDisplay").css("display", "block");
-			$("#inventory").val("");
-			document.getElementById("barcode").value = generateBarcode();
-		}
-	});
+	// $("#attributes").change(function () {
+	// 	let attributes = $("#attributes option:selected").val();
+	// 	if (attributes == "1" || attributes == null) {
+	// 		$("#qtyDisplay").css("display", "none");
+	// 		$("#inventory").val("0");
+	// 		$("#barcode").val("999999999999");
+	// 	} else {
+	// 		$("#qtyDisplay").css("display", "block");
+	// 		$("#inventory").val("");
+	// 		document.getElementById("barcode").value = generateBarcode();
+	// 	}
+	// });
 
 	$("#addAttributesBRD").on("click", function () {
 		document.getElementById("barcode").value = generateBarcode();
+
+		// For Get colors and display in dropdownItem
+		let color = $("#color").find("option").last().attr("data-color_values");
+		let colors_value = JSON.parse(color);
+		let colorSelect = $("#colors_value");
+		colorSelect.html("");
+		colorSelect.append($("<option></option>").val("").html("Please Select"));
+		$.each(colors_value, function (key, val) {
+			colorSelect.append($("<option></option>").val(val.value).html(val.value));
+		});
+		//console.log(colorSelect, "colorSelect");
+
+		// For get Sizes and display in dropdownItem
+
+		let size = $("#size").find("option").last().attr("data-size_values");
+		let sizes_value = JSON.parse(size);
+		let sizeSelect = $("#sizes_value");
+		sizeSelect.html("");
+		sizeSelect.append($("<option></option>").val("").html("Please Select"));
+		$.each(sizes_value, function (key, val) {
+			sizeSelect.append($("<option></option>").val(val.value).html(val.value));
+		});
 	});
 	// const abc
 	const clearText = () => {
-		$("#attributes").val("");
-		$("#attributes_value").val("");
+		// $("#attributes").val("");
+		// $("#attributes_value").val("");
+		$("#colors_value").val("");
+		$("#sizes_value").val("");
 		$("#stylecode").val("");
 		$("#inventory").val("");
 		document.getElementById("barcode").value = generateBarcode();
@@ -135,7 +184,7 @@ $(document).ready(function () {
 		row.closest("tr").remove();
 	};
 	//change attributes
-	$("#attributes").on("change", function () {
+	/* $("#attributes").on("change", function () {
 		let attributes = $(this).find(":selected").attr("data-attr_values");
 		if (attributes != null) {
 			let attributes_value = JSON.parse(attributes);
@@ -147,13 +196,14 @@ $(document).ready(function () {
 					$("<option></option>").val(val.value).html(val.value)
 				);
 			});
+			console.log(attrSelect, "attrSelect");
 		}
-	});
+	}); */
 	// end of change attributes
 });
 
 $(function () {
-	$("#p_price,#weight")
+	$("#p_price, #weight")
 		.on("input", function (e) {
 			if (/^(\d+(\.\d{0,2})?)?$/.test($(this).val())) {
 				// Input is OK. Remember this value

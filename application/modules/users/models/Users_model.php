@@ -88,16 +88,18 @@ class Users_model extends MY_Model
         return $resData;
     }
 
-    public function getStoreID($userID)
+    public function getStoreData($userID)
     {
-        $query = "SELECT ur.store_id 
+        $query = "SELECT ur.store_id, ur.group_id 
         FROM tbl_login ur 
         WHERE login_id = $userID";
         $result = $this->db->query($query);
-        $userid = [];
+        $storeData = [];
         foreach ($result->result_array() as $row) {
-            $userid[] = $row;
+            $storeData[] = $row;
         }
-        return $userid[0]['store_id'];
+        //  return $this->db->query($query)->result();
+        // return $userid[0]['store_id'];
+        return $storeData;
     }
 }

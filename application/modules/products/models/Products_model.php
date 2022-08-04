@@ -98,7 +98,8 @@ class Products_model extends MY_Model
                   tpp.prod_id,
                   tpp.prod_price_id,
                   tpp.attributes_id,
-                  tpp.attributes_value,
+                  tpp.color,
+                  tpp.size,
                   tpp.sold_as,
                   tpp.price,
                   tpp.tax_rate,
@@ -111,7 +112,7 @@ class Products_model extends MY_Model
                  WHERE  tpp.is_deleted='0' AND tpp.prod_id=$prod_id group by tpp.prod_price_id";
     return $this->db->query($query)->result();
   }
-  function get_products($storeID)
+  function get_products($storeID, $groupID)
   {
     $query = "SELECT tp.prod_id,
                     tp.image_path,
@@ -120,8 +121,7 @@ class Products_model extends MY_Model
                     st.name as store_name,
                     (SELECT SUM(pa.inventory)
                     FROM   tbl_product_price pa
-                    WHERE  pa.attributes_id = 4
-                            AND pa.is_deleted = '0'
+                    WHERE  pa.is_deleted = '0'
                             AND tp.prod_id = pa.prod_id) AS inventory,
                     (SELECT spde.shopi_product_id
                     FROM   tbl_shopify_product_details spde
@@ -140,7 +140,8 @@ class Products_model extends MY_Model
                           ON spd.prod_id = tp.prod_id
                     LEFT JOIN tbl_stores st 
                           ON st.id = $storeID       
-              WHERE  tp.is_deleted = '0'";
+              WHERE  IF (NOT EXISTS (select group_id from tbl_products where group_id = $groupID), tp.store_id = $storeID, tp.group_id = 3) 
+                     AND tp.is_deleted = '0'";
 
     $totalCol = $this->input->post('iColumns');
     $search = $this->input->post('sSearch');
@@ -186,28 +187,30 @@ class Products_model extends MY_Model
                   p.`description`,
                   pa.price,
                   pa.attributes_id,
-                  Group_concat(pa.attributes_value SEPARATOR ',') AS attributes_value,
-                  Group_concat(pa.price SEPARATOR ',') AS qty,
+                  Group_concat(pa.color SEPARATOR ',') AS color,
+                  Group_concat(pa.size SEPARATOR ',') AS size,
                   pa.inventory
               FROM `tbl_products` p
                   LEFT JOIN tbl_product_price pa ON pa.prod_id = p.prod_id
               WHERE p.prod_id = $id
-              GROUP BY p.prod_id, pa.attributes_id";
+              GROUP BY p.prod_id";
 
     $result = $this->db->query($query);
     $emparray = [];
     $attributes = ["Color", "Size"];
     foreach ($result->result_array() as $row) {
-      $arrrayAtri = explode(",", $row['attributes_value']);
-      $values = '"' . implode('", "', $arrrayAtri) . '"';
+      $arrSize = explode(",", $row['size']);
+      $arrColor = explode(",", $row['color']);
+      $valuesSize = '"' . implode('", "', $arrSize) . '"';
+      $valuesColor = '"' . implode('", "', $arrColor) . '"';
       $product_id = $row['prod_id'];
       if (!isset($emparray[$row['prod_id']])) {
         $emparray[$row['prod_id']] = [
           'title' => $row['name'],
           'body_html' => $row['description'],
-          "vendor" => "IFIF Lifestyle",
+          "vendor" => "BGF",
           "published" => "0",
-          "published_at" => "2022-03-28T19:00:00-05:00", // date("Y-m-d h:i:s")
+          "published_at" => date("Y-m-d h:i:s"), // date("Y-m-d h:i:s")
           "published_scope" => "global",
           'options' => [],
           'variants' => [],
@@ -215,16 +218,27 @@ class Products_model extends MY_Model
       }
       $emparray[$row['prod_id']]['options'][] =
         [
-          "name" => $attributes[sizeof($emparray[$row['prod_id']]['options'])],
-          "position" => sizeof($emparray[$row['prod_id']]['options']) + 1,
-          'values' => [
-            $values
+          [
+            "name" => $attributes[0],
+            "position" => 1,
+            'values' => [
+              $valuesColor
+            ]
+          ],
+          [
+            "name" => $attributes[1],
+            "position" => 2,
+            'values' => [
+              $valuesSize
+            ]
           ],
 
         ];
     }
+
     array_push($emparray[$product_id]['variants'], $this->getVariantGroupBy($id));
-    return $emparray;
+    $optionsArray = $this->removeUselessArrays($emparray, 'options');
+    return $optionsArray;
   }
 
 
@@ -236,18 +250,19 @@ class Products_model extends MY_Model
                   pa.prod_id,
                   p.name,
                   p.p_price as price,
-                  pa.attributes_value,
+                  pa.color,
+                  pa.size,
                   pa.inventory as qty,
                   pa.stylecode,
                   pa.barcode,
                   p.weight
               FROM `tbl_product_price` pa 
               LEFT JOIN tbl_products p ON pa.prod_id = p.prod_id
-              where pa.prod_id = '" . $id . "' and pa.attributes_id = 4";
+              WHERE pa.prod_id = '" . $id . "'
+              GROUP BY  pa.prod_price_id ";
     $result = $this->db->query($query);
     $data = [];
     foreach ($result->result_array() as $row) {
-      $colorValue = $this->getColor($row['prod_id']);
       $data[] = [
         "sku" => $row['stylecode'],
         'title' => $row['name'],
@@ -265,8 +280,8 @@ class Products_model extends MY_Model
         ],
         "weight" => $row['weight'],
         "weight_unit" => "kg",
-        "option1" =>  $colorValue,
-        "option2" =>  $row['attributes_value'],
+        "option1" =>  $row['color'],
+        "option2" =>  $row['size'],
 
 
       ];

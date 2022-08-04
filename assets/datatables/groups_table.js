@@ -49,15 +49,25 @@ $(document).ready(function () {
 		columnDefs: [
 			{
 				render: function (data, type, row) {
-					return (
-						'<a class="btn-primary btn-circle btn-sm" href="' +
-						ADMIN_URL +
-						"groups/edit/" +
-						row.id +
-						'" ><i class="fas fa-pencil-alt"></i></a> <a class="btn-danger btn-circle btn-sm text-white"  data-id=' +
-						row.id +
-						' id="btnDelete"><i class="fas fa-trash-alt"></i></a>'
-					);
+					if (row.id == 3) {
+						return (
+							'<a class="btn-primary btn-circle btn-sm" href="' +
+							ADMIN_URL +
+							"groups/edit/" +
+							row.id +
+							'" ><i class="fas fa-pencil-alt"></i></a> <a class="btn-danger btn-circle btn-sm text-white" style="cursor: not-allowed;background-color: rgb(229, 229, 229) !important;"><i class="fas fa-trash-alt"></i></a>'
+						);
+					} else {
+						return (
+							'<a class="btn-primary btn-circle btn-sm" href="' +
+							ADMIN_URL +
+							"groups/edit/" +
+							row.id +
+							'" ><i class="fas fa-pencil-alt"></i></a> <a class="btn-danger btn-circle btn-sm text-white"  data-id=' +
+							row.id +
+							' id="btnDelete"><i class="fas fa-trash-alt"></i></a>'
+						);
+					}
 				},
 				targets: $("#myTable th#action").index(),
 				orderable: true,

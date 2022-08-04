@@ -29,18 +29,18 @@ class Tiktok extends Admin_Controller
         $new_selling_price = $this->input->post('new_selling_price');
         $prod_id = $this->input->post('prod_id');
         $attributes_value = $this->input->post('attributes_value');
-        $colorValue = $this->tiktok_model->getColor($prod_id);
+        $attributes_color = $this->input->post('attributes_color');
+       // $colorValue = $this->tiktok_model->getColor($prod_id);
         $tiktokData = [
             "selling_price" => $new_selling_price,
             "id_product" => $prod_id,
             "prod_price_id" => $prod_price_id,
             "size" => $attributes_value,
+            "color" => $attributes_color,
         ];
-        $tiktokData['color'] = $colorValue;
+       // $tiktokData['color'] = $colorValue;
         $variantExits = $this->tiktok_model->attributeID_exists($prod_price_id);
         $result = ($variantExits === 1) ? $this->tiktok_model->edit_row($prod_price_id, array("selling_price" => $new_selling_price, 'updated_at' => date("Y-m-d h:i:s"))) : $this->tiktok_model->add($tiktokData);
-        //$result = ($variantExits == 1) ? 'update' : 'add';
-        //echo $result;
         //$result = $this->inventory_model->edit_row($prod_price_id, array("selling_price" => $new_selling_price, 'updated_at' => date("Y-m-d h:i:s")));
         if ($result) {
             echo json_encode(array('message' => 'Selling Price Updated Successfully', 'type' => 'success'));
@@ -61,10 +61,7 @@ class Tiktok extends Admin_Controller
             5 => "prd_barcode",
             6 => "inventory"
         );
-        // $limit = $this->input->post("length");
-        // $start = $this->input->post("start");
-        // $order = $columns[$this->input->post("order")[0]["column"]];
-        // $dir = $this->input->post("order")[0]["dir"];
+
         $totalData = $this->tiktok_model->tot_rows();
         $totalFiltered = $totalData;
 
@@ -82,7 +79,6 @@ class Tiktok extends Admin_Controller
             foreach ($records as $rows) {
                 $readonly = ($rows->attributes_id == 1) ? 'readonly' : '';
                 $sellPrice = $rows->p_price + $rows->p_price * ($rows->tax_rate / 100);
-                //  $viewBtn = anchor(site_url('tiktok/view/' . urlencode(base64_encode($rows->prod_price_id))), 'View', array('class' => 'btn btn-primary btn-sm')) . "&nbsp;";
                 if ($rows->image_path) {
                     $image = "<img src='$rows->image_path' width='100' height='100' id='btnImgpop' data-image_path='$rows->image_path' />";
                 } else {
@@ -94,7 +90,7 @@ class Tiktok extends Admin_Controller
                 $nestedData["product_name"] = $rows->product_name;
                 $nestedData["p_price"] = "£" . $rows->p_price;
                 $nestedData["tax_rate"] = $rows->tax_rate . " %";
-                $nestedData["attributes"] = "<b>" . $rows->attributes_name . ":</b> " . $rows->attributes_value;
+                $nestedData["attributes"] = "<b>Color:</b> " . $rows->color . "<br><b>Size:</b> " . $rows->size;
                 $nestedData["selling_price"] = "£" . $sellPrice . " / " . $rows->sold_as;
                 $nestedData["prd_barcode"] = $rows->prd_barcode;
                 $nestedData["barcode"] = $rows->barcode;
@@ -103,7 +99,8 @@ class Tiktok extends Admin_Controller
                 <input id='input' type='text'
                  data-prod_price_id='$rows->prod_price_id' 
                  data-id_product = '$rows->prod_id' 
-                 data-attributes_value = '$rows->attributes_value' 
+                 data-attributes_value = '$rows->size' 
+                 data-attributes_color = '$rows->color' 
                  class='form-control inventory_container' 
                  style='text-align:center'value='$rows->selling_price' $readonly>
                 </div>";
@@ -111,11 +108,6 @@ class Tiktok extends Admin_Controller
             } //End of for
         } //End of if
         $json_data = array(
-            /* "draw" => intval($this->input->post("draw")),
-            "recordsTotal" => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data" => $data, */
-
             "data" => $data,
             "iTotalDisplayRecords" => intval($totalData),
             "iTotalRecords" => intval($totalData),
@@ -137,16 +129,20 @@ class Tiktok extends Admin_Controller
         header("Content-Type: application/vnd.ms-excel");
         header("Content-Disposition: attachment; filename=\"$filename\"");
         $isPrintHeader = false;
+        $new_array = [];
         if (!empty($productResult)) {
-            foreach ($productResult as $row) {
+            foreach ($productResult as $key =>$value) {
                 if (!$isPrintHeader) {
-                    echo implode(";", array_keys($row)) . "\n";
+                   // echo implode(";", array_keys($row)) . "\n";
+                   $new_array[$key] = $value;
                     $isPrintHeader = true;
                 }
-                echo implode(";", array_values($row)) . "\n";
+                // echo implode(";", array_values($row)) . "\n";
+                $new_array[$key] = $value;
             }
         }
-        exit();
+        echo json_encode($new_array); 
+       // exit();
     }
 
     public function exportP($ids)

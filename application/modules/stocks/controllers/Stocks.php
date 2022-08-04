@@ -14,7 +14,9 @@ class Stocks extends Admin_Controller
         $this->load->library('breadcrumbs');
         $this->load->model('users/users_model');
         // $this->getProducts();
-        $this->storeID = $this->users_model->getStoreID($this->login_id);
+        //$this->storeID = $this->users_model->getStoreID($this->login_id);
+      $this->storeData = $this->users_model->getStoreData($this->login_id);
+      $this->storeID = $this->storeData[0]['store_id'];
     }
     public function index()
     {
@@ -28,7 +30,6 @@ class Stocks extends Admin_Controller
 
     public function edit()
     {
-        // echo $this->storeID;
         $variant_id = $this->input->post('variant_id');
         $new_inventory = $this->input->post('new_inventory');
         //$variantID = $this->inventory_model->getVariantID($variant_id);
@@ -54,9 +55,9 @@ class Stocks extends Admin_Controller
             5 => "barcode",
             6 => "inventory_quantity",
         );
-        //$storeID = $this->users_model->getStoreID($this->login_id);
-        $totalData = $this->stocks_model->tot_rows();
-        $products = $this->stocks_model->allProducts($this->storeID);
+        $storeData = $this->users_model->getStoreData($this->login_id);
+        $totalData = $this->stocks_model->tot_rows($storeData[0]['store_id']);
+        $products = $this->stocks_model->allProducts($storeData[0]['store_id']);
         $data = [];
         if (!empty($products)) {
             foreach ($products as $rows) {

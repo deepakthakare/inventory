@@ -141,8 +141,10 @@ $(document).ready(function () {
 			},
 		],
 	});
+
 	$(".dataTables_filter input").attr("placeholder", "Search...");
 
+	// Zoom Image
 	$("#myTable").on("click", "#btnImgpop", function (e) {
 		let imgPath = $(this).data("prod_id");
 		html =
@@ -153,6 +155,7 @@ $(document).ready(function () {
 		$("#ImageModal").modal("show");
 	});
 
+	// delete product
 	$("#myTable").on("click", "#btnDelete", function () {
 		var prod_id = $(this).data("prod_id");
 		if (confirm("Are you sure?")) {
@@ -176,6 +179,7 @@ $(document).ready(function () {
 		}
 	});
 
+	// view product
 	$("#myTable").on("click", ".checkInventory", function () {
 		var prod_id = $(this).data("prod_id");
 		var url = ADMIN_URL + "products/get_product_inventory";
@@ -211,10 +215,13 @@ $(document).ready(function () {
 							'</div>\
                   </div>\
                  <div class="col-sm-12">\
-                    <div class="product_attribute"><b>' +
-							val.attributes_name +
-							" : </b>" +
-							val.attributes_value +
+                    <div class="product_attribute"><b> Color: </b>' +
+							val.color +
+							'</div>\
+                  </div>\
+                 <div class="col-sm-12">\
+                    <div class="product_attribute"><b> Size: </b>' +
+							val.size +
 							'</div>\
                   </div>\
                   <div class="col-sm-12">\
@@ -248,7 +255,6 @@ $(document).ready(function () {
 			});
 	});
 });
-
 const pushToShopify = (prod_id, shopiID, storeID) => {
 	if (shopiID !== null) {
 		swal("Product Already Created!", "", "warning");

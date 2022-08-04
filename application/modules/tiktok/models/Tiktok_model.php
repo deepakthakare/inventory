@@ -37,6 +37,8 @@ class Tiktok_model extends MY_Model
         tpp.prod_price_id,
         tpp.attributes_id,
         tpp.attributes_value,
+        tpp.color,
+        tpp.size,
         tpp.sold_as,
         tp.p_price,
         tpp.tax_rate,
@@ -65,6 +67,8 @@ class Tiktok_model extends MY_Model
         tpp.prod_price_id,
         tpp.attributes_id,
         tpp.attributes_value,
+        tpp.color,
+        tpp.size,
         tpp.sold_as,
         tp.p_price,
         tpp.tax_rate,
@@ -99,6 +103,8 @@ class Tiktok_model extends MY_Model
         tpp.prod_price_id,
         tpp.attributes_id,
         tpp.attributes_value,
+        tpp.color,
+        tpp.size,
         tpp.sold_as,
         tp.p_price,
         tpp.tax_rate,
@@ -138,6 +144,8 @@ class Tiktok_model extends MY_Model
         tpp.prod_price_id,
         tpp.attributes_id,
         tpp.attributes_value,
+        tpp.color,
+        tpp.size,
         tpp.sold_as,
         tp.p_price,
         tpp.tax_rate,
@@ -186,7 +194,7 @@ class Tiktok_model extends MY_Model
     {
 
         $query = "SELECT
-        '' as category,
+         c.name as category,
         '' as brand,
         p.name,
         p.description,
@@ -217,6 +225,7 @@ class Tiktok_model extends MY_Model
         FROM `tbl_tiktok_products` tk
         LEFT JOIN tbl_products p ON tk.id_product = p.prod_id
         LEFT JOIN tbl_product_price tpp ON tpp.prod_price_id = tk.prod_price_id
+        LEFT JOIN tbl_category c ON c.category_id = p.category_id
         Where tpp.is_deleted = 0 AND tk.prod_price_id IN ($ids)";
         return $this->db->query($query)->result('array');
     }
