@@ -280,7 +280,7 @@ const barcodePrinting = (id, brd) => {
 		$("#variant_quantity").parent("div").find(".text-danger").remove();
 		$("#variant_quantity").removeClass("show_error");
 	}
-	goToBarcodePage(id, brd);
+	goToBarcodePage();
 };
 const goToBarcodePage = () => {
 	let v_qty = $("#brdqty").val();

@@ -82,6 +82,7 @@ class Delnote extends Admin_Controller
       );
       $result = $this->delnote_model->add($data);
 
+      // Product Variants
       $single_mix =  $this->input->post('single_mix');
       $product_category =  $this->input->post('product_category');
       $bin_number =  $this->input->post('bin_number');

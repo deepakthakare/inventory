@@ -41,7 +41,7 @@ $("#product_supplier").on("change", function () {
 
 // view Supplier
 $("#country_details").on("click", ".supplier_details", function () {
-	console.log("clicked");
+	//console.log("clicked");
 	// $("#myTable").on("click", ".checkSupplier", function () {
 	var id_supplier = $(this).data("id_supplier");
 	console.log(id_supplier);

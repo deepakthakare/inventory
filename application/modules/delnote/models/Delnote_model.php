@@ -123,7 +123,6 @@ class Delnote_model extends MY_Model
   function update_del_product($id)
   {
     $query = "SELECT * FROM tbl_delnote_products where id_del_product = $id";
-    //return $this->db->last_query();
     return $this->db->query($query)->result();
     //return "hello";
   }
