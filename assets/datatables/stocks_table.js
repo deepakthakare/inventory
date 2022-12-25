@@ -6,13 +6,12 @@ $(document).ready(function () {
 		bStateSave: true,
 		processing: true,
 		bPaginate: true,
-		serverSide: true,
+		//serverSide: true,
 		bProcessing: true,
 		iDisplayLength: 10,
+		searching: true,
 		//	bServerSide: true,
 		sAjaxSource: ADMIN_URL + "stocks/get_products",
-		// sAjaxSource: ADMIN_URL + "brands/get_brands",
-		bPaginate: true,
 		fnServerParams: function (aoData) {
 			var acolumns = this.fnSettings().aoColumns,
 				columns = [];
@@ -88,28 +87,55 @@ $(document).ready(function () {
 
 	$(".dataTables_filter input").attr("placeholder", "Search...");
 
+	const filterGlobal = () => {
+		$("#myTable").DataTable().search($("#myCustomSearchBox").val()).draw();
+	};
+	$("#myCustomSearchBox").keyup(function () {
+		filterGlobal();
+	});
+	const resetFilter = () => {
+		$("#myTable").DataTable().search('').draw();
+
+	}
+	$("#resetTxtbx").on("click", function (e) {
+		document.getElementById("myCustomSearchBox").value = "";
+		resetFilter()
+	});
+	// Image Zoom
+	$("#myTable").on("click", "#btnImgpop", function (e) {
+		let imgPath = $(this).data("image_path");
+		html =
+			'<img width="231" height="347" src="' +
+			imgPath +
+			'" id="product_image"/>';
+		$("#image_modal_body").html(html);
+		$("#ImageModal").modal("show");
+	});
+
 	//Stock Update
-	$("#myTable").on('change', '.inventory_container', function() {
-		var variant_id = $(this).attr('data-variant_id');
+	$("#myTable").on("change", ".inventory_container", function () {
+		var variant_id = $(this).attr("data-variant_id");
 		var new_inventory = $(this).val();
 
-		var url = ADMIN_URL + 'stocks/edit';
+		var url = ADMIN_URL + "stocks/edit";
 		var param = {
 			variant_id: variant_id,
-			new_inventory: new_inventory
+			new_inventory: new_inventory,
 		};
 		console.log(param, "param");
-		trigger_ajax(url, param).done(function(res) {
-			var res = JSON.parse(res);
-			if (res['type'] === "success") {
-				var myTable = $('#myTable').DataTable();
-				// If you want totally refresh the datatable use this
-				// myTable.ajax.reload();
-				// If you want to refresh but keep the paging you can you this
-				myTable.ajax.reload(null, false);
-			}
-		}).fail(function() {
-			console.log("falied");
-		});
+		trigger_ajax(url, param)
+			.done(function (res) {
+				var res = JSON.parse(res);
+				if (res["type"] === "success") {
+					var myTable = $("#myTable").DataTable();
+					// If you want totally refresh the datatable use this
+					// myTable.ajax.reload();
+					// If you want to refresh but keep the paging you can you this
+					myTable.ajax.reload(null, false);
+				}
+			})
+			.fail(function () {
+				console.log("falied");
+			});
 	});
 });

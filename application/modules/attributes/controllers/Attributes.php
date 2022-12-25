@@ -68,7 +68,7 @@ class Attributes extends Admin_Controller
   }
   public function edit($id)
   {
-    $this->layout->add_js('../public/pekeupload/js/pekeUpload.js');
+   // $this->layout->add_js('../public/pekeupload/js/pekeUpload.js');
     if (check_post()) {
       $this->_rules();
       if ($this->form_validation->run() == FALSE) {
@@ -89,6 +89,7 @@ class Attributes extends Admin_Controller
     } else {
       $row = $this->attributes_model->get_by_id($id);
       if ($row) {
+        print_r($row->values);
         $data = array(
           'button' => 'Update',
           'action' => admin_url('attributes/edit/' . $row->attributes_id),

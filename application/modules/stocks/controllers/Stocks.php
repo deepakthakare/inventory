@@ -15,8 +15,8 @@ class Stocks extends Admin_Controller
         $this->load->model('users/users_model');
         // $this->getProducts();
         //$this->storeID = $this->users_model->getStoreID($this->login_id);
-      $this->storeData = $this->users_model->getStoreData($this->login_id);
-      $this->storeID = $this->storeData[0]['store_id'];
+        $this->storeData = $this->users_model->getStoreData($this->login_id);
+        $this->storeID = $this->storeData[0]['store_id'];
     }
     public function index()
     {
@@ -56,45 +56,53 @@ class Stocks extends Admin_Controller
             6 => "inventory_quantity",
         );
         $storeData = $this->users_model->getStoreData($this->login_id);
-        $totalData = $this->stocks_model->tot_rows($storeData[0]['store_id']);
-        $products = $this->stocks_model->allProducts($storeData[0]['store_id']);
+        $totalData = $this->stocks_model->tot_rows($this->storeID);
+        $products = $this->stocks_model->allProducts($this->storeID);
         $data = [];
         if (!empty($products)) {
             foreach ($products as $rows) {
                 foreach ($rows as $row) {
-                    $productID =  $row['product_id'];
-                    $imageID = $row['image_id'];
-                    //  $imageURL = $this->stocks_model->getImageURL($productID, $imageID, $storeID);
-                    // $productName = $this->stocks_model->getproductName($productID);
-                    $imageURL = base_url() . "assets/img/not-found.png";
+                   // if (!empty($row['barcode'])) {
+                        $productID =  $row['product_id'];
+                        $variantID =  $row['id'];
+                        // $imageID = $row['image_id'];
+                        //  $imageURL = $this->stocks_model->getImageURL($productID, $imageID, $storeID);
+                        // $imageURL = $this->stocks_model->getImageURL($productID, $storeData[0]['store_id']);
 
-                    if ($imageURL) {
-                        //  $image = "<img src='$imageURL' width='50' height='50' id='btnImgpop' data-image_path='$imageURL' />";
-                        $image = "<img src='" . $imageURL . "' width='50' height='50' id='btnImgpop' />";
-                    } else {
-                        $img_url = base_url() . "assets/img/not-found.png";
-                        $image = "<img src='" . $img_url . "' width='50' height='50' id='btnImgpop' />";
-                    };
+                        print_r($variantID); die;
+                        
+                        if ($variantID) {
+                            
+                            $productData = $this->stocks_model->getProductDetails($variantID);
 
-                    $inventory = $row['inventory_quantity'];
-                    $variant_id = $row['id'];
-                    $nestedData["image"] = $imageID;
-                    $nestedData["name"] = $productID;
-                    $nestedData["product_id"] = $productID;
-                    $nestedData["title"] = $row['title']; // variant Name
-                    $nestedData["price"] = "£" . $row['price'];
-                    $nestedData["barcode"] = $row['barcode'];
-                    // $nestedData["inventory_quantity"] = $row['inventory_quantity'];
-                    $nestedData["inventory_quantity"] = "<div id='input_container' ><input id='input' type='text' data-variant_id='$variant_id' class='form-control inventory_container' style='text-align:center'value='$inventory'></div>";
+                            if (!$productData) {
+                                //  $image = "<img src='$imageURL' width='50' height='50' id='btnImgpop' data-image_path='$imageURL' />";
+                                $prdImage = $productData[0]['image_path'];
+                                $prdName = $productData[0]['name'];
+                                $image = "<img src='" . $prdImage . "' width='50' height='50' id='btnImgpop' />";
+                            } else {
+                                $prdImage = base_url() . "assets/img/not-found.png";
+                                $prdName = '--';
+                                $image = "<img src='" . $prdImage . "' width='50' height='50' id='btnImgpop' />";
+                            };
+                        }
+                        $inventory = $row['inventory_quantity'];
+                        $variant_id = $row['id'];
+                        $nestedData["image"] = $image;
+                        $nestedData["name"] = $prdName;
+                        $nestedData["product_id"] = $productID;
+                        $nestedData["title"] = $row['title']; // variant Name
+                        $nestedData["price"] = "£" . $row['price'];
+                        $nestedData["barcode"] = $row['barcode'];
+                        // $nestedData["inventory_quantity"] = $row['inventory_quantity'];
+                        $nestedData["inventory_quantity"] = "<div id='input_container' ><input id='input' type='text' data-variant_id='$variant_id' class='form-control inventory_container' style='text-align:center'value='$inventory'></div>";
 
-                    $data[] = $nestedData;
+                        $data[] = $nestedData;
+                   // }
                 }
             } // end foreach
 
         } // end if
-
-        /*  echo "<pre>";
-        print_r($data); */
         $resData = json_encode(array(
             "aaData" => $data,
             "iTotalDisplayRecords" => intval($totalData),

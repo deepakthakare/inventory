@@ -116,24 +116,38 @@ $(document).ready(function () {
 
 			{
 				render: function (data, type, row) {
+
 					let prdID = row.prod_id;
-					return (
-						'<a class="btn-primary btn-circle btn-sm" data-toggle="tooltip" title="Edit" href="' +
-						ADMIN_URL +
-						"products/edit/" +
-						row.prod_id +
-						'" ><i class="fas fa-pencil-alt"></i></a> <a href="#" class="btn-danger btn-circle btn-sm text-white" data-toggle="tooltip" title="Delete"  data-prod_id=' +
-						row.prod_id +
-						' id="btnDelete"><i class="fas fa-trash-alt"></i></a> <a href="#" class="btn-success btn-circle btn-sm text-white" data-toggle="tooltip" title="Push to ' +
-						DOMAIN +
-						'" data-prod_id=' +
-						row.prod_id +
-						' id="btnPush" onclick="pushToShopify(' +
-						prdID +
-						"," +
-						row.shopi_product_id +
-						');"><i class="fa-solid fa-cloud-arrow-up"></i></a>'
-					);
+					if(row.store_id == 3) {
+						return (
+							'<a class="btn-primary btn-circle btn-sm" data-toggle="tooltip" title="Edit" href="' +
+							ADMIN_URL +
+							"products/edit/" +
+							row.prod_id +
+							'" ><i class="fas fa-pencil-alt"></i></a> <a href="#" class="btn-danger btn-circle btn-sm text-white" data-toggle="tooltip" title="Delete"  data-prod_id=' +
+							row.prod_id +
+							' id="btnDelete"><i class="fas fa-trash-alt"></i></a>'
+						);
+					} else {
+						return (
+							'<a class="btn-primary btn-circle btn-sm" data-toggle="tooltip" title="Edit" href="' +
+							ADMIN_URL +
+							"products/edit/" +
+							row.prod_id +
+							'" ><i class="fas fa-pencil-alt"></i></a> <a href="#" class="btn-danger btn-circle btn-sm text-white" data-toggle="tooltip" title="Delete"  data-prod_id=' +
+							row.prod_id +
+							' id="btnDelete"><i class="fas fa-trash-alt"></i></a> <a href="#" class="btn-success btn-circle btn-sm text-white" data-toggle="tooltip" title="Push to ' +
+							DOMAIN +
+							'" data-prod_id=' +
+							row.prod_id +
+							' id="btnPush" onclick="pushToShopify(' +
+							prdID +
+							"," +
+							row.shopi_product_id +
+							');"><i class="fa-solid fa-cloud-arrow-up"></i></a>'
+						);
+					}
+					
 				},
 				targets: $("#myTable th#action").index(),
 				orderable: true,

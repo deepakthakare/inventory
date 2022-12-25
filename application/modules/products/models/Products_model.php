@@ -16,13 +16,14 @@ class Products_model extends MY_Model
   // get data by id
   function get_by_id($id)
   {
-    $this->db->select("p.*,pp.*,tpa.name as attributes_name")
+    $this->db->select("p.*, pp.*, ld.*")
       ->from('tbl_products as p')
       ->join('tbl_product_price as pp', 'pp.prod_id=p.prod_id', 'left')
-      ->join('tbl_product_attributes as tpa', 'tpa.attributes_id=pp.attributes_id', 'left')
+      ->join('tbl_location_details as ld', 'ld.prd_id = p.prod_id', 'left')
       ->where(array("p.prod_id" => $id, "p.is_deleted" => "0", "pp.is_deleted" => "0"));
     return $this->db->get()->result();
   }
+
   function get_all()
   {
     $this->db->select("name")
@@ -31,16 +32,25 @@ class Products_model extends MY_Model
       ->order_by('name');
     return $this->db->get()->result();
   }
+
   function add($data)
   {
     $this->db->insert($this->tbl, $data);
     return $this->db->insert_id();
   }
+
   function add_price($data)
   {
     $this->db->insert("tbl_product_price", $data);
     return $this->db->insert_id();
   }
+
+  function add_locationdetails($data)
+  {
+    $this->db->insert("tbl_location_details", $data);
+    return $this->db->insert_id();
+  }
+
   function edit_price($prod_price_id, $data)
   {
     $this->db->where('prod_price_id', $prod_price_id);
@@ -65,8 +75,6 @@ class Products_model extends MY_Model
     $this->db->where($where);
     $this->db->update("tbl_product_price", array('variant_id' => $var_id));
   }
-
-
 
   function addProductData($data)
   {
@@ -112,6 +120,7 @@ class Products_model extends MY_Model
                  WHERE  tpp.is_deleted='0' AND tpp.prod_id=$prod_id group by tpp.prod_price_id";
     return $this->db->query($query)->result();
   }
+  
   function get_products($storeID, $groupID)
   {
     $query = "SELECT tp.prod_id,
@@ -119,6 +128,7 @@ class Products_model extends MY_Model
                     tp.name,
                     tp.prd_barcode,
                     st.name as store_name,
+                    st.id as store_id,
                     (SELECT SUM(pa.inventory)
                     FROM   tbl_product_price pa
                     WHERE  pa.is_deleted = '0'
@@ -140,7 +150,7 @@ class Products_model extends MY_Model
                           ON spd.prod_id = tp.prod_id
                     LEFT JOIN tbl_stores st 
                           ON st.id = $storeID       
-              WHERE  IF (NOT EXISTS (select group_id from tbl_products where group_id = $groupID), tp.store_id = $storeID, tp.group_id = 3) 
+              WHERE  IF (NOT EXISTS (select group_id from tbl_products where group_id = $groupID), tp.store_id IN( $storeID, 3), tp.group_id = 3) 
                      AND tp.is_deleted = '0'";
 
     $totalCol = $this->input->post('iColumns');
@@ -429,5 +439,133 @@ class Products_model extends MY_Model
     $response = curl_exec($ch);
     curl_close($ch);
     return $response;
+  }
+
+  function getListWarehouse($vendorID)
+  {
+    if ($vendorID != 0) {
+      $this->db->select('warehouse_name');
+      $this->db->where("id", $vendorID);
+      $this->db->where("is_deleted ", "0");
+      $this->db->limit(1);
+      $query = $this->db->get('tbl_vendors');
+      $result =  $query->row()->warehouse_name;
+
+      $resultConvert = str_replace("[", '(', str_replace("]", ')', $result));
+      $query = 'SELECT `id`,`name`,`code` 
+                  FROM `tbl_warehouse` 
+                  where is_deleted = 0 AND id IN' . $resultConvert;
+      $resultFinal = $this->db->query($query)->result();
+      return json_decode(json_encode($resultFinal), true);
+    } else {
+      return 0;
+    }
+  }
+
+  function getListPlace($warehouseID)
+  {
+    if ($warehouseID != 0) {
+      $this->db->select('place_name');
+      $this->db->where("id", $warehouseID);
+      $this->db->where("is_deleted ", "0");
+      $this->db->limit(1);
+      $query = $this->db->get('tbl_warehouse');
+      $result =  $query->row()->place_name;
+      $resultConvert = str_replace("[", '(', str_replace("]", ')', $result));
+      $query = 'SELECT `place_id`,`name`,`code` 
+                  FROM `tbl_warehouse_places` 
+                  where is_deleted = 0 AND place_id IN' . $resultConvert;
+      $resultFinal = $this->db->query($query)->result();
+      return json_decode(json_encode($resultFinal), true);
+    } else {
+      return 0;
+    }
+  }
+
+  function getListAisle($aisleID)
+  {
+
+    if ($aisleID != 0) {
+      $this->db->select('aisle_id');
+      $this->db->where("place_id", $aisleID);
+      $this->db->where("is_deleted ", "0");
+      $this->db->limit(1);
+      $query = $this->db->get('tbl_warehouse_places');
+      $result =  $query->row()->aisle_id;
+      $resultConvert = str_replace("[", '(', str_replace("]", ')', $result));
+      $query = 'SELECT `aisle_id`,`name`,`code` 
+                  FROM `tbl_warehouse_aisle` 
+                  where is_deleted = 0 AND aisle_id IN' . $resultConvert;
+      $resultFinal = $this->db->query($query)->result();
+      return json_decode(json_encode($resultFinal), true);
+    } else {
+      return 0;
+    }
+  }
+
+  function getListSection($sectionID)
+  {
+    if ($sectionID != 0) {
+      $this->db->select('section_id');
+      $this->db->where("aisle_id", $sectionID);
+      $this->db->where("is_deleted ", "0");
+      $this->db->limit(1);
+      $query = $this->db->get('tbl_warehouse_aisle');
+      $result =  $query->row()->section_id;
+      $resultConvert = str_replace("[", '(', str_replace("]", ')', $result));
+      $query = 'SELECT `section_id`,`name`,`code` 
+                  FROM `tbl_warehouse_sections` 
+                  where is_deleted = 0 AND section_id IN' . $resultConvert;
+      $resultFinal = $this->db->query($query)->result();
+      return json_decode(json_encode($resultFinal), true);
+    } else {
+      return 0;
+    }
+  }
+
+  function getListSubSection($subsectionID)
+  {
+    if ($subsectionID != 0) {
+      $this->db->select('subsection_id');
+      $this->db->where("section_id", $subsectionID);
+      $this->db->where("is_deleted ", "0");
+      $this->db->limit(1);
+      $query = $this->db->get('tbl_warehouse_sections');
+      $result =  $query->row()->subsection_id;
+      $resultConvert = str_replace("[", '(', str_replace("]", ')', $result));
+      $query = 'SELECT `subsection_id`,`name`,`code` 
+                  FROM `tbl_warehouse_subsections` 
+                  where is_deleted = 0 AND subsection_id IN' . $resultConvert;
+      $resultFinal = $this->db->query($query)->result();
+      return json_decode(json_encode($resultFinal), true);
+    } else {
+      return 0;
+    }
+  }
+  function updateLocationDetails($id, $data)
+  {
+    $this->db->where('prd_id', $id);
+    $q = $this->db->get('tbl_location_details');
+    if ($q->num_rows() > 0) {
+      $this->db->where('prd_id', $id);
+      $this->db->update('tbl_location_details', $data);
+    } else {
+      $this->db->set('prd_id', $id);
+      $this->db->insert('tbl_location_details', $data);
+    }
+  }
+
+  function getProductId($id)
+  {
+    $this->db->select('prd_id');
+    $this->db->from('tbl_location_details');
+    $this->db->where("prd_id", $id);
+    $this->db->where("is_deleted", 0);
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

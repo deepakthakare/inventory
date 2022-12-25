@@ -21,7 +21,7 @@ class Login_model extends CI_Model
         $this->db->select('*');
         $this->db->from('tbl_login');
         $this->db->where("username", $username);
-        //$this->db->where("password", $password);
+       // $this->db->where("password", $password);
         $this->db->where("is_deleted", 0);
         $query = $this->db->get();
         if ($query->num_rows() == 1) {

@@ -10,8 +10,12 @@ class Tiktok extends Admin_Controller
     {
         parent::__construct();
         $this->load->model('tiktok_model');
+        $this->load->model('users/users_model');
         $this->load->library('form_validation');
         $this->load->library('breadcrumbs');
+        $this->storeData = $this->users_model->getStoreData($this->login_id);
+        $this->storeID = $this->storeData[0]['store_id'];
+        $this->groupID = $this->storeData[0]['group_id'];
     }
     public function index()
     {
@@ -28,20 +32,23 @@ class Tiktok extends Admin_Controller
         $prod_price_id = $this->input->post('prod_price_id');
         $new_selling_price = $this->input->post('new_selling_price');
         $prod_id = $this->input->post('prod_id');
+        $id_store = $this->input->post('id_store');
+        $id_group = $this->input->post('id_group');
         $attributes_value = $this->input->post('attributes_value');
         $attributes_color = $this->input->post('attributes_color');
-       // $colorValue = $this->tiktok_model->getColor($prod_id);
+        // $colorValue = $this->tiktok_model->getColor($prod_id);
         $tiktokData = [
             "selling_price" => $new_selling_price,
             "id_product" => $prod_id,
             "prod_price_id" => $prod_price_id,
             "size" => $attributes_value,
             "color" => $attributes_color,
+            "id_store" => $id_store,
+            "id_group" => $id_group,
         ];
-       // $tiktokData['color'] = $colorValue;
+        // $tiktokData['color'] = $colorValue;
         $variantExits = $this->tiktok_model->attributeID_exists($prod_price_id);
         $result = ($variantExits === 1) ? $this->tiktok_model->edit_row($prod_price_id, array("selling_price" => $new_selling_price, 'updated_at' => date("Y-m-d h:i:s"))) : $this->tiktok_model->add($tiktokData);
-        //$result = $this->inventory_model->edit_row($prod_price_id, array("selling_price" => $new_selling_price, 'updated_at' => date("Y-m-d h:i:s")));
         if ($result) {
             echo json_encode(array('message' => 'Selling Price Updated Successfully', 'type' => 'success'));
         } else {
@@ -67,7 +74,7 @@ class Tiktok extends Admin_Controller
 
         if (empty($this->input->post("search")["value"])) {
             //$records = $this->tiktok_model->all_rows($limit, $start, $order, $dir);
-            $records = $this->tiktok_model->all_rows();
+            $records = $this->tiktok_model->all_rows($this->storeID, $this->groupID);
         } else {
             $search = $this->input->post("search")["value"];
             $records = $this->tiktok_model->search_rows($search);
@@ -101,8 +108,14 @@ class Tiktok extends Admin_Controller
                  data-id_product = '$rows->prod_id' 
                  data-attributes_value = '$rows->size' 
                  data-attributes_color = '$rows->color' 
+                 data-id_store = '$rows->store_id' 
+                 data-id_group = '$rows->group_id' 
                  class='form-control inventory_container' 
-                 style='text-align:center'value='$rows->selling_price' $readonly>
+                 style='text-align:center' 
+                 onkeyup='numericFilter(this)'
+                 value='$rows->selling_price'
+                
+                 $readonly>
                 </div>";
                 $data[] = $nestedData;
             } //End of for
@@ -131,18 +144,18 @@ class Tiktok extends Admin_Controller
         $isPrintHeader = false;
         $new_array = [];
         if (!empty($productResult)) {
-            foreach ($productResult as $key =>$value) {
+            foreach ($productResult as $key => $value) {
                 if (!$isPrintHeader) {
-                   // echo implode(";", array_keys($row)) . "\n";
-                   $new_array[$key] = $value;
+                    // echo implode(";", array_keys($row)) . "\n";
+                    $new_array[$key] = $value;
                     $isPrintHeader = true;
                 }
                 // echo implode(";", array_values($row)) . "\n";
                 $new_array[$key] = $value;
             }
         }
-        echo json_encode($new_array); 
-       // exit();
+        echo json_encode($new_array);
+        // exit();
     }
 
     public function exportP($ids)

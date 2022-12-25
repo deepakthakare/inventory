@@ -64,6 +64,20 @@
                                     <td><input type="checkbox" name="permission[]" id="permission" value="deleteBrand" class="minimal"></td>
                                 </tr>
                                 <tr>
+                                    <td>Vendors</td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="createVendors" class="minimal"></td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="updateVendors" class="minimal"></td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="viewVendors" class="minimal"></td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="deleteVendors" class="minimal"></td>
+                                </tr>
+                                <tr>
+                                    <td>Warehouse</td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="createWarehouse" class="minimal"></td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="updateWarehouse" class="minimal"></td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="viewWarehouse" class="minimal"></td>
+                                    <td><input type="checkbox" name="permission[]" id="permission" value="deleteWarehouse" class="minimal"></td>
+                                </tr>
+                                <tr>
                                     <td>Category</td>
                                     <td><input type="checkbox" name="permission[]" id="permission" value="createCategory" class="minimal"></td>
                                     <td><input type="checkbox" name="permission[]" id="permission" value="updateCategory" class="minimal"></td>

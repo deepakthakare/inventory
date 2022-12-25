@@ -98,8 +98,6 @@ class Users_model extends MY_Model
         foreach ($result->result_array() as $row) {
             $storeData[] = $row;
         }
-        //  return $this->db->query($query)->result();
-        // return $userid[0]['store_id'];
         return $storeData;
     }
 }

@@ -59,9 +59,10 @@ class Tiktok_model extends MY_Model
     } //End of tot_rows()
 
     // function all_rows($limit, $start, $col, $dir)
-    function all_rows()
+    function all_rows($storeID, $groupID)
     {
-        $this->db->select("tp.name as product_name,
+    $query = "SELECT 
+        tp.name as product_name,
         tp.image_path,
         tpp.prod_id,
         tpp.prod_price_id,
@@ -77,20 +78,21 @@ class Tiktok_model extends MY_Model
         tpp.barcode,
         IFNULL(`tk`.`selling_price`,'0.00') as selling_price,
         tpp.stylecode,
-        tap.name as attributes_name");
-        $this->db->from("tbl_product_price as tpp");
-        $this->db->join('tbl_product_attributes as tap', 'tap.attributes_id=tpp.attributes_id', 'left');
-        $this->db->join('tbl_products tp', 'tp.prod_id=tpp.prod_id', 'left');
-        $this->db->join('tbl_tiktok_products tk', 'tpp.prod_price_id = tk.prod_price_id', 'left outer');
-        $this->db->where("tp.is_deleted", "0");
-        $this->db->group_by('tpp.prod_price_id');
-        // $this->db->limit($limit, $start);
-        // $this->db->order_by($col, $dir);
-        $query = $this->db->get();
-        if ($query->num_rows() == 0) {
+        tap.name as attributes_name,
+        $storeID as store_id,
+        $groupID as group_id
+    FROM tbl_product_price as tpp
+    LEFT JOIN tbl_product_attributes as tap ON tap.attributes_id = tpp.attributes_id
+    LEFT JOIN  tbl_products tp ON tp.prod_id = tpp.prod_id 
+    LEFT OUTER JOIN tbl_tiktok_products tk ON tpp.prod_price_id = tk.prod_price_id
+    WHERE IF (NOT EXISTS (select group_id from tbl_products where group_id = $groupID), tp.store_id IN( $storeID, 3), tp.group_id = 3) 
+    AND tp.is_deleted = '0'
+    GROUP BY tpp.prod_price_id;";
+        $result = $this->db->query($query);
+        if ($result->num_rows() == 0) {
             return NULL;
         } else {
-            return $query->result();
+            return $result->result();
         }
     } //End of all_rows()
 

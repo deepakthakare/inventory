@@ -10,6 +10,7 @@ class MY_Controller extends MX_Controller
   public function check_loggedin()
   {
     $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    //echo $url;
     $this->session->set_userdata('redirectToCurrent', $url);
     $user = $this->session->all_userdata();
     if (isset($user['admin_logged_in'])) return true;

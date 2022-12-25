@@ -13,32 +13,6 @@ $(document).ready(function () {
 		let inventory = $("#inventory").val();
 		let barcode = $("#barcode").val();
 
-		/* if (attributes == "" || attributes == null) {
-			$("#attributes").focus();
-			if ($("#attributes").parent("div").find(".text-danger").length == 0) {
-				$("#attributes").after(
-					'<span class="text-danger">Select An Attributes.</span>'
-				);
-			}
-			return false;
-		} else {
-			$("#attributes").parent("div").find(".text-danger").remove();
-		}
-
-		if (attributes_value == "" || attributes_value == null) {
-			$("#attributes_value").focus();
-			if (
-				$("#attributes_value").parent("div").find(".text-danger").length == 0
-			) {
-				$("#attributes_value").after(
-					'<span class="text-danger">Select An Attributes Value.</span>'
-				);
-			}
-			return false;
-		} else {
-			$("#attributes_value").parent("div").find(".text-danger").remove();
-		} */
-
 		if (colors_value == "" || colors_value == null) {
 			$("#colors_value").focus();
 			if ($("#colors_value").parent("div").find(".text-danger").length == 0) {
@@ -79,7 +53,7 @@ $(document).ready(function () {
 			$("#inventory").focus();
 			if ($("#inventory").parent("div").find(".text-danger").length == 0) {
 				$("#inventory").after(
-					'<span class="text-danger">Enter Inventory.</span>'
+					'<span class="text-danger">Enter Quantity.</span>'
 				);
 			}
 			return false;
@@ -111,19 +85,6 @@ $(document).ready(function () {
 	});
 	//end of add attributes
 
-	// $("#attributes").change(function () {
-	// 	let attributes = $("#attributes option:selected").val();
-	// 	if (attributes == "1" || attributes == null) {
-	// 		$("#qtyDisplay").css("display", "none");
-	// 		$("#inventory").val("0");
-	// 		$("#barcode").val("999999999999");
-	// 	} else {
-	// 		$("#qtyDisplay").css("display", "block");
-	// 		$("#inventory").val("");
-	// 		document.getElementById("barcode").value = generateBarcode();
-	// 	}
-	// });
-
 	$("#addAttributesBRD").on("click", function () {
 		document.getElementById("barcode").value = generateBarcode();
 
@@ -149,10 +110,106 @@ $(document).ready(function () {
 			sizeSelect.append($("<option></option>").val(val.value).html(val.value));
 		});
 	});
+
+	$("#btnAddVendorWarehouse").on("click", function () {
+		//console.log("clicked add button");
+		let vendor_value = $("#vendors option:selected").val();
+		let warehouse_value = $("#warehouse_value option:selected").val();
+		let place_value = $("#place_value option:selected").val();
+		let aisle_value = $("#aisle_value option:selected").val();
+		let section_value = $("#section_value option:selected").val();
+		let subsection_value = $("#subsection_value option:selected").val();
+		let number_value = $("#number_value").val();
+
+		//Validation
+		if (vendor_value == "" || vendor_value == null) {
+			$("#vendors").focus();
+			if ($("#vendors").parent("div").find(".text-danger").length == 0) {
+				$("#vendors").after(
+					'<span class="text-danger">Select An Vendor Value.</span>'
+				);
+			}
+			return false;
+		} else {
+			$("#vendors").parent("div").find(".text-danger").remove();
+		}
+		//end validation
+
+		//Get Code values
+		let vendor_code = $("#vendors").find(":selected").attr("data-vendor_code");
+		let warehouse_code = $("#warehouse_value")
+			.find(":selected")
+			.attr("data-warehouse_code");
+		let place_code = $("#place_value")
+			.find(":selected")
+			.attr("data-place_code");
+		let aisle_code = $("#aisle_value")
+			.find(":selected")
+			.attr("data-aisle_code");
+		let section_code = $("#section_value")
+			.find(":selected")
+			.attr("data-section_code");
+		let subsection_code = $("#subsection_value")
+			.find(":selected")
+			.attr("data-subsection_code");
+
+		warehouse_code = warehouse_code = warehouse_code || "99";
+		place_code = place_code = place_code || "99";
+		aisle_code = aisle_code = aisle_code || "99";
+		section_code = section_code = section_code || "99";
+		subsection_code = subsection_code = subsection_code || "99";
+
+		warehouse_value = warehouse_value = warehouse_value || 0;
+		place_value = place_value = place_value || 0;
+		aisle_value = aisle_value = aisle_value || 0;
+		section_value = section_value = section_value || 0;
+		subsection_value = subsection_value = subsection_value || 0;
+		number_value = number_value = number_value || 0;
+		
+		let allValues = {
+			vendor_value,
+			warehouse_value,
+			place_value,
+			aisle_value,
+			section_value,
+			subsection_value,
+			number_value,
+		};
+
+		allValues = JSON.stringify(allValues).replace(/\"/g, '"');
+		//console.log(allValues,"asdfasdfasdf")
+		let main = document.getElementById("tbl_vendordetails");
+		main.setAttribute("value", allValues);
+		let location =
+			vendor_code +
+			"-" +
+			warehouse_code +
+			"" +
+			place_code +
+			"" +
+			aisle_code +
+			"" +
+			section_code +
+			"" +
+			subsection_code +
+			"" +
+			number_value;
+
+		if (vendor_code !== "undefined") {
+			$("#location").val(location);
+
+			let div = document.createElement("div");
+			div.id = "locationC";
+			div.className = "btn btn-warning btn-sm";
+			div.title = "Generated Location";
+			document.getElementById("locationP").appendChild(div);
+			$("#locationC").html(location);
+		}
+		$("#locationModal").modal("hide");
+	});
+
 	// const abc
 	const clearText = () => {
-		// $("#attributes").val("");
-		// $("#attributes_value").val("");
 		$("#colors_value").val("");
 		$("#sizes_value").val("");
 		$("#stylecode").val("");
@@ -183,23 +240,6 @@ $(document).ready(function () {
 	removeROW = function (row) {
 		row.closest("tr").remove();
 	};
-	//change attributes
-	/* $("#attributes").on("change", function () {
-		let attributes = $(this).find(":selected").attr("data-attr_values");
-		if (attributes != null) {
-			let attributes_value = JSON.parse(attributes);
-			let attrSelect = $("#attributes_value");
-			attrSelect.html("");
-			attrSelect.append($("<option></option>").val("").html("Please Select"));
-			$.each(attributes_value, function (key, val) {
-				attrSelect.append(
-					$("<option></option>").val(val.value).html(val.value)
-				);
-			});
-			console.log(attrSelect, "attrSelect");
-		}
-	}); */
-	// end of change attributes
 });
 
 $(function () {
@@ -216,12 +256,69 @@ $(function () {
 		.trigger("input"); // Initialise the `prevValue` data properties
 });
 
+$("#vendors").on("change", function () {
+	let vendorID = $("#vendors").val();
+	$.ajax({
+		type: "POST",
+		data: { vendorID: vendorID },
+		url: ADMIN_URL + "products/onchangeVendor",
+		success: function (result) {
+			//console.log(result,"result")
+			$("#warehouse_value").html(result);
+		},
+	});
+});
+
+$("#warehouse_value").on("change", function () {
+	let warehouseID = $("#warehouse_value").val();
+	$.ajax({
+		type: "POST",
+		data: { warehouseID: warehouseID },
+		url: ADMIN_URL + "products/onchangeWarehouse",
+		success: function (result) {
+			$("#place_value").html(result);
+		},
+	});
+});
+
+$("#place_value").on("change", function () {
+	let aisleID = $("#place_value").val();
+	$.ajax({
+		type: "POST",
+		data: { aisleID: aisleID },
+		url: ADMIN_URL + "products/onchangePlace",
+		success: function (result) {
+			$("#aisle_value").html(result);
+		},
+	});
+});
+
+$("#aisle_value").on("change", function () {
+	let sectionID = $("#aisle_value").val();
+	$.ajax({
+		type: "POST",
+		data: { sectionID: sectionID },
+		url: ADMIN_URL + "products/onchangeAisle",
+		success: function (result) {
+			$("#section_value").html(result);
+		},
+	});
+});
+
+$("#section_value").on("change", function () {
+	let subsectionID = $("#section_value").val();
+	console.log(subsectionID, "subsectionID");
+	$.ajax({
+		type: "POST",
+		data: { subsectionID: subsectionID },
+		url: ADMIN_URL + "products/onchangeSection",
+		success: function (result) {
+			$("#subsection_value").html(result);
+		},
+	});
+});
+
 const printBarcode = (id, barcode) => {
-	/* swal("Write something here:", {
-		content: "input",
-	}).then((value) => {
-		swal(`You typed: ${value}`);
-	}); */
 	swal(
 		{
 			title: "",
@@ -241,8 +338,8 @@ const printBarcode = (id, barcode) => {
 			console.log(`${inputValue} - ${id} -${barcode} `);
 			if (id !== "" || barcode !== "") {
 				swal("", "Barcode Generated successfully", "success");
-				/* let hostname = window.location.origin;
-				console.log(hostname); */
+				// let hostname = window.location.origin;
+				// console.log(hostname);
 				let url =
 					"http://localhost/sales-inventory-ci/" +
 					"html/ean13.php?id=" +

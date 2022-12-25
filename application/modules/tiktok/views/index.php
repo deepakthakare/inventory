@@ -269,6 +269,8 @@
             $("#myTable").on('change', '.inventory_container', function() {
                 var prod_price_id = $(this).attr('data-prod_price_id');
                 var prod_id = $(this).attr('data-id_product');
+                var id_store = $(this).attr('data-id_store');
+                var id_group = $(this).attr('data-id_group');
                 var attributes_value = $(this).attr('data-attributes_value');
                 var attributes_color = $(this).attr('data-attributes_color');
                 var new_selling_price = $(this).val();
@@ -277,6 +279,8 @@
                     prod_price_id: prod_price_id,
                     new_selling_price: new_selling_price,
                     prod_id: prod_id,
+                    id_store: id_store,
+                    id_group: id_group,
                     attributes_value: attributes_value,
                     attributes_color: attributes_color,
                 };
@@ -336,6 +340,10 @@
                 $(this).parent().find('input[type="checkbox"]').trigger('click');
             });
 
+            $("#myTable").on('keyup', '.checkInteger', function() {
+                console.log('first')
+            })
+
             // Handle click on "Select all" control
             $('thead input[name="select_all"]', myTable.table().container()).on('click', function(e) {
                 if (this.checked) {
@@ -389,32 +397,15 @@
                     success: function(data) {
                         let jsonParsedArray = JSON.parse(data);
                         console.log(jsonParsedArray)
-                      
                         var csv = JSON2CSV(jsonParsedArray);
                         var downloadLink = document.createElement("a");
                         var blob = new Blob(["\ufeff", csv]);
                         var url = URL.createObjectURL(blob);
                         downloadLink.href = url;
                         downloadLink.download = "data.csv";
-
                         document.body.appendChild(downloadLink);
                         downloadLink.click();
                         document.body.removeChild(downloadLink)
-
-
-                        /* let downloadLink = document.createElement("a");
-                        let fileData = ['\ufeff' + data];
-                        var blobObject = new Blob(fileData, {
-                            type: "text/csv;charset=utf-8;"
-                        });
-                        let today = new Date().toISOString().slice(0, 10)
-                        let url = URL.createObjectURL(blobObject);
-                        downloadLink.href = url;
-                        downloadLink.download = "tiktokProducts" + today + ".csv";
-                        document.body.appendChild(downloadLink);
-                        downloadLink.click();
-                        document.body.removeChild(downloadLink); */
-
                     },
                 });
             });
@@ -425,7 +416,7 @@
             var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
             var str = '';
             var line = '';
-            var headers = "category,brand,name,description,weight,length,width, height, delivery_option, identifier_code_type,	identifier_code, color,	image_path,	size,selling_price,	quantity, sku, warranty_period, image, image2,	image3,	image4,	image5,	image6,	image7,	image8,	image9\n";
+            var headers = "category,brand,name,description,weight,length,width, height, delivery_option, identifier_code_type, identifier_code, color, image_path, size,selling_price,	quantity, sku, warranty_period, image, image2,	image3,	image4,	image5,	image6,	image7,	image8,	image9\n";
 
             if ($("#labels").is(':checked')) {
                 var head = array[0];
@@ -460,8 +451,11 @@
 
                 line = line.slice(0, -1);
                 headers += str + line + '\r\n';
-              
+
             }
             return headers;
+        }
+        const numericFilter = (txb) => {
+            txb.value = txb.value.replace(/[^\0-9]/ig, "");
         }
     </script>

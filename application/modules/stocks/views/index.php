@@ -34,6 +34,10 @@
     .top {
         margin-top: 25px
     }
+
+    div#myTable_filter {
+        display: none;
+    }
 </style>
 <div class="mb-4">
     <?= $this->breadcrumbs->show(); ?>
