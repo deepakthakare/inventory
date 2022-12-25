@@ -32,10 +32,13 @@ defined('DIR_READ_MODE')   or define('DIR_READ_MODE', 0755);
 defined('DIR_WRITE_MODE')  or define('DIR_WRITE_MODE', 0755);
 
 // Shopify APP API Key. Added by deepak
+<<<<<<< HEAD
 defined('SHOPIFY_API_KEY')  or define('SHOPIFY_API_KEY', 'https://912040110b75e3b1ce4fe721c626ff6d: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@isuf-una.myshopify.com');
 
 //defined('SHOPIFY_API_KEY_BGF')  or define('SHOPIFY_API_KEY_BGF', 'https://279bd0e5fdceea5d4bbcd68a86cd589e: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@bgf-isuf.myshopify.com');
 defined('SHOPIFY_API_KEY_BGF')  or define('SHOPIFY_API_KEY_BGF', 'https://ba0fb7844409061aa9365c7d5c15e26d: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@redhotbeauty.myshopify.com');
+=======
+>>>>>>> a205f8ce9aea9b5289a0edfddf6311d041485f85
 
 
 /*
