@@ -50,7 +50,7 @@ class Sales extends Admin_Controller
   function getShopifyCustomers()
   {
     $customersShopi = $this->sales_model->getShopifyCustomers();
-    echo "<pre>";
+    // echo "<pre>";
     if ($customersShopi) {
       echo '<option value="">Select Customers</option>';
       foreach ($customersShopi as $row) {

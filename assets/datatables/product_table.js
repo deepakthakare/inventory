@@ -2,6 +2,7 @@
  * @Author: Deepak
  */
 $(document).ready(function () {
+	let DOMAIN = "IFIF LifeStyle";
 	var myTable = $("#myTable").dataTable({
 		bStateSave: true,
 		processing: true,
@@ -93,12 +94,19 @@ $(document).ready(function () {
 				render: function (data, type, row) {
 					let status =
 						row.shopi_status === "Pushed"
-							? '<button type="button" class="btn btn-success btn-sm" title="Pushed to Shopify Website.">' +
+							? '<button type="button" class="btn btn-success btn-sm" title="Pushed on ' +
+							  row.store_name +
+							  ' ">' +
 							  row.shopi_status +
 							  " </button>"
-							: '<button type="button" class="btn btn-warning btn-sm" title="Not Pushed to Shopify Website.">' +
-							  row.shopi_status +
-							  "</button>";
+							: '<button type="button" class="btn btn-warning btn-sm" title="Not Pushed on ' +
+							  DOMAIN +
+							  ' Website.">' +
+							  (row.shopi_status == null)
+							? '<button type="button" class="btn btn-warning btn-sm" title="Pushed on ' +
+							  row.store_name +
+							  '">Pending</button>'
+							: "" + "</button>";
 					return status;
 				}, ///
 				targets: $("#myTable th#status").index(),
@@ -108,22 +116,38 @@ $(document).ready(function () {
 
 			{
 				render: function (data, type, row) {
+
 					let prdID = row.prod_id;
-					return (
-						'<a class="btn-primary btn-circle btn-sm" data-toggle="tooltip" title="Edit" href="' +
-						ADMIN_URL +
-						"products/edit/" +
-						row.prod_id +
-						'" ><i class="fas fa-pencil-alt"></i></a> <a href="#" class="btn-danger btn-circle btn-sm text-white" data-toggle="tooltip" title="Delete"  data-prod_id=' +
-						row.prod_id +
-						' id="btnDelete"><i class="fas fa-trash-alt"></i></a> <a href="#" class="btn-success btn-circle btn-sm text-white" data-toggle="tooltip" title="Push to Shopify" data-prod_id=' +
-						row.prod_id +
-						' id="btnPush" onclick="pushToShopify(' +
-						prdID +
-						"," +
-						row.shopify_id +
-						');"><i class="fa-solid fa-cloud-arrow-up"></i></a>'
-					);
+					if(row.store_id == 3) {
+						return (
+							'<a class="btn-primary btn-circle btn-sm" data-toggle="tooltip" title="Edit" href="' +
+							ADMIN_URL +
+							"products/edit/" +
+							row.prod_id +
+							'" ><i class="fas fa-pencil-alt"></i></a> <a href="#" class="btn-danger btn-circle btn-sm text-white" data-toggle="tooltip" title="Delete"  data-prod_id=' +
+							row.prod_id +
+							' id="btnDelete"><i class="fas fa-trash-alt"></i></a>'
+						);
+					} else {
+						return (
+							'<a class="btn-primary btn-circle btn-sm" data-toggle="tooltip" title="Edit" href="' +
+							ADMIN_URL +
+							"products/edit/" +
+							row.prod_id +
+							'" ><i class="fas fa-pencil-alt"></i></a> <a href="#" class="btn-danger btn-circle btn-sm text-white" data-toggle="tooltip" title="Delete"  data-prod_id=' +
+							row.prod_id +
+							' id="btnDelete"><i class="fas fa-trash-alt"></i></a> <a href="#" class="btn-success btn-circle btn-sm text-white" data-toggle="tooltip" title="Push to ' +
+							DOMAIN +
+							'" data-prod_id=' +
+							row.prod_id +
+							' id="btnPush" onclick="pushToShopify(' +
+							prdID +
+							"," +
+							row.shopi_product_id +
+							');"><i class="fa-solid fa-cloud-arrow-up"></i></a>'
+						);
+					}
+					
 				},
 				targets: $("#myTable th#action").index(),
 				orderable: true,
@@ -131,8 +155,10 @@ $(document).ready(function () {
 			},
 		],
 	});
+
 	$(".dataTables_filter input").attr("placeholder", "Search...");
 
+	// Zoom Image
 	$("#myTable").on("click", "#btnImgpop", function (e) {
 		let imgPath = $(this).data("prod_id");
 		html =
@@ -143,6 +169,7 @@ $(document).ready(function () {
 		$("#ImageModal").modal("show");
 	});
 
+	// delete product
 	$("#myTable").on("click", "#btnDelete", function () {
 		var prod_id = $(this).data("prod_id");
 		if (confirm("Are you sure?")) {
@@ -166,6 +193,7 @@ $(document).ready(function () {
 		}
 	});
 
+	// view product
 	$("#myTable").on("click", ".checkInventory", function () {
 		var prod_id = $(this).data("prod_id");
 		var url = ADMIN_URL + "products/get_product_inventory";
@@ -201,10 +229,13 @@ $(document).ready(function () {
 							'</div>\
                   </div>\
                  <div class="col-sm-12">\
-                    <div class="product_attribute"><b>' +
-							val.attributes_name +
-							" : </b>" +
-							val.attributes_value +
+                    <div class="product_attribute"><b> Color: </b>' +
+							val.color +
+							'</div>\
+                  </div>\
+                 <div class="col-sm-12">\
+                    <div class="product_attribute"><b> Size: </b>' +
+							val.size +
 							'</div>\
                   </div>\
                   <div class="col-sm-12">\
@@ -238,9 +269,8 @@ $(document).ready(function () {
 			});
 	});
 });
-
-const pushToShopify = (prod_id, shopiID) => {
-	if (shopiID !== 0) {
+const pushToShopify = (prod_id, shopiID, storeID) => {
+	if (shopiID !== null) {
 		swal("Product Already Created!", "", "warning");
 	} else {
 		swal(
@@ -249,11 +279,13 @@ const pushToShopify = (prod_id, shopiID) => {
 				text: "To Push the product.",
 				type: "warning",
 				showCancelButton: true,
-				confirmButtonClass: "btn-danger",
+				confirmButtonClass: "btn-primary",
+				cancelButtonClass: "btn-secondary",
 				confirmButtonText: "Yes",
 				cancelButtonText: "No",
 				closeOnConfirm: false,
 				closeOnCancel: false,
+				showLoaderOnConfirm: true,
 			},
 			function (isConfirm) {
 				if (isConfirm) {
@@ -264,9 +296,11 @@ const pushToShopify = (prod_id, shopiID) => {
 							var res = JSON.parse(res);
 							console.log(res, "res");
 							if (res.product.id !== "") {
-								swal("Created!", "Product successfully created!.", "success");
-								var myTable = $("#myTable").DataTable();
-								myTable.ajax.reload(null, false);
+								setTimeout(function () {
+									swal("Created!", "Product successfully created!.", "success");
+									var myTable = $("#myTable").DataTable();
+									myTable.ajax.reload(null, false);
+								}, 4000);
 							}
 						})
 						.fail(function () {

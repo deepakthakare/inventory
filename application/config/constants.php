@@ -31,9 +31,6 @@ defined('FILE_WRITE_MODE') or define('FILE_WRITE_MODE', 0666);
 defined('DIR_READ_MODE')   or define('DIR_READ_MODE', 0755);
 defined('DIR_WRITE_MODE')  or define('DIR_WRITE_MODE', 0755);
 
-// Shopify APP API Key. Added by deepak
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -89,7 +86,7 @@ defined('EXIT__AUTO_MIN')      or define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      or define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 //custom constant
-define('COMPANY_NAME', 'Inventory Management');
+define('COMPANY_NAME', 'Product Management');
 define('COMPANY_NICK_NAME', 'IM');
-define('PROJECT_TITLE', 'Inventory Management');
+define('PROJECT_TITLE', 'Product Management');
 define('ADMIN_URL_PREFIX', 'administrator');

@@ -7,6 +7,7 @@
   th {
     text-align: center !important;
   }
+  
 </style>
 <div class="mb-4">
   <?= $this->breadcrumbs->show(); ?>

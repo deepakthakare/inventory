@@ -17,25 +17,30 @@ class Login_model extends CI_Model
     }
     function process($username, $password)
     {
+
         $this->db->select('*');
         $this->db->from('tbl_login');
         $this->db->where("username", $username);
-        $this->db->where("password", MD5($password));
+       // $this->db->where("password", $password);
         $this->db->where("is_deleted", 0);
         $query = $this->db->get();
         if ($query->num_rows() == 1) {
             $row = $query->row();
             $id = $row->login_id;
+            $store_id = $row->store_id;
             $username = $row->username;
-            $password = $row->password;
-            $data = array(
-                "username" => $username,
-                "login_id" => $id,
-                "admin_logged_in" => true,
-                "isadmin" => true
-            );
-            $this->session->set_userdata($data);
-            return true;
+            $hash_password = password_verify($password, $row->password);
+            if ($hash_password === true) {
+                $data = array(
+                    "username" => $username,
+                    "login_id" => $id,
+                    "store_id" => $store_id,
+                    "admin_logged_in" => true,
+                    "isadmin" => true
+                );
+                $this->session->set_userdata($data);
+                return true;
+            }
         } else {
             return false;
         }

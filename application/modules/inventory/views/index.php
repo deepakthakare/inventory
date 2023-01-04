@@ -45,8 +45,13 @@
             <h6 class="m-0 font-weight-bold text-primary">Inventory Details </h6>
           </div>
           <div class="container top">
-            <div class="col-lg-4">
-              <input type="text" id="myCustomSearchBox" class="form-control" placeholder="Search Barcode" autofocus="autofocus">
+            <div class="row">
+              <div class="col-sm-6 col-md-4 col-xs-12" id="searchTxt">
+                <input type="text" id="myCustomSearchBox" class="form-control" placeholder="Search Barcode" autofocus="autofocus">
+              </div>
+              <div class=" col-sm-6 col-md-2 col-xs-12">
+                <button id="resetTxtbx" value="Reset" class="btn btn-primary form-control btn-block" type="button">Reset</button>
+              </div>
             </div>
           </div>
 
@@ -130,6 +135,10 @@
                 myTable.search($(this).val()).draw();
               })
 
+              $("#resetTxtbx").on("click", function(e) {
+                document.getElementById("myCustomSearchBox").value = '';
+                myTable.search('').draw();
+              });
               // Image Zoom
               $("#myTable").on("click", "#btnImgpop", function(e) {
                 let imgPath = $(this).data("image_path");

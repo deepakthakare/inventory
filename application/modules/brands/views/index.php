@@ -1,16 +1,20 @@
 <div class="mb-4">
-  <?= $this->breadcrumbs->show(); ?>
+  <?= $this->breadcrumbs->show();
+
+  ?>
 </div>
 <div class="row">
   <div class="col-xl-12 col-lg-12">
     <div class="card shadow mb-4">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">Brand List</h6>
-        <div class="dropdown no-arrow">
-          <a class="btn btn-outline-success btn-sm" href="<?= admin_url('brands/add'); ?>" role="button">
-            <i class="fas fa-plus fa-sm"></i> Add Brand
-          </a>
-        </div>
+        <?php if (in_array('createBrand', $user_permission)) { ?>
+          <div class="dropdown no-arrow">
+            <a class="btn btn-outline-success btn-sm" href="<?= admin_url('brands/add'); ?>" role="button">
+              <i class="fas fa-plus fa-sm"></i> Add Brand
+            </a>
+          </div>
+        <?php } ?>
       </div>
       <!-- Card Body -->
       <div class="card-body">

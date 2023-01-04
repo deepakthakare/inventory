@@ -94,4 +94,24 @@ class Attributes_model extends MY_Model
 
     return $resData;
   }
+
+  function getColorList()
+  {
+    $multipleCIWhere = ['is_deleted' => 0, 'attributes_id' => 1, 'name' => 'Color'];
+    $this->db->select("name,attributes_id,values")
+      ->from($this->tbl)
+      ->where($multipleCIWhere)
+      ->order_by('name');
+    return $this->db->get()->result();
+  }
+
+  function getSizeList()
+  {
+    $multipleCIWhere = ['is_deleted' => 0, 'attributes_id' => 4, 'name' => 'Size'];
+    $this->db->select("name,attributes_id,values")
+      ->from($this->tbl)
+      ->where($multipleCIWhere)
+      ->order_by('name');
+    return $this->db->get()->result();
+  }
 }

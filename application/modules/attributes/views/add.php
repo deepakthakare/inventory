@@ -46,7 +46,7 @@
                 </div>
             </div>
         </div>
-         <script src="<?php echo base_url()?>assets/js/tagify.js"></script>
+        <script src="<?php echo base_url()?>assets/js/tagify.js"></script>
         <link href="<?php echo base_url()?>assets/css/tagify.css" rel="stylesheet" />
          <!-- <script src="<?php echo base_url()?>assets/js/jQuery.tagify.min.js"></script> -->
         <script>

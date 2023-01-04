@@ -1,0 +1,189 @@
+<?php
+# @Author: Deepak
+
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+class Tiktok extends Admin_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('tiktok_model');
+        $this->load->model('users/users_model');
+        $this->load->library('form_validation');
+        $this->load->library('breadcrumbs');
+        $this->storeData = $this->users_model->getStoreData($this->login_id);
+        $this->storeID = $this->storeData[0]['store_id'];
+        $this->groupID = $this->storeData[0]['group_id'];
+    }
+    public function index()
+    {
+        $this->layout->set_title('Product Details');
+        $this->load_datatables();
+        //$this->layout->add_js('../datatables/tiktok_table.js');
+        $this->breadcrumbs->admin_push('Dashboard', 'dashboard');
+        $this->breadcrumbs->admin_push('Tiktok Product Datails', 'tiktok');
+        $this->layout->view_render('index');
+    }
+
+    public function edit()
+    {
+        $prod_price_id = $this->input->post('prod_price_id');
+        $new_selling_price = $this->input->post('new_selling_price');
+        $prod_id = $this->input->post('prod_id');
+        $id_store = $this->input->post('id_store');
+        $id_group = $this->input->post('id_group');
+        $attributes_value = $this->input->post('attributes_value');
+        $attributes_color = $this->input->post('attributes_color');
+        // $colorValue = $this->tiktok_model->getColor($prod_id);
+        $tiktokData = [
+            "selling_price" => $new_selling_price,
+            "id_product" => $prod_id,
+            "prod_price_id" => $prod_price_id,
+            "size" => $attributes_value,
+            "color" => $attributes_color,
+            "id_store" => $id_store,
+            "id_group" => $id_group,
+        ];
+        // $tiktokData['color'] = $colorValue;
+        $variantExits = $this->tiktok_model->attributeID_exists($prod_price_id);
+        $result = ($variantExits === 1) ? $this->tiktok_model->edit_row($prod_price_id, array("selling_price" => $new_selling_price, 'updated_at' => date("Y-m-d h:i:s"))) : $this->tiktok_model->add($tiktokData);
+        if ($result) {
+            echo json_encode(array('message' => 'Selling Price Updated Successfully', 'type' => 'success'));
+        } else {
+            echo json_encode(array('message' => 'Something went wrong', 'type' => 'warning'));
+        }
+    }
+
+    public function get_tiktok_products()
+    {
+
+        $columns = array(
+            0 => "prod_price_id",
+            1 => "image_path",
+            2 => "product_name",
+            3 => "price",
+            4 => "tax_rate",
+            5 => "prd_barcode",
+            6 => "inventory"
+        );
+
+        $totalData = $this->tiktok_model->tot_rows();
+        $totalFiltered = $totalData;
+
+        if (empty($this->input->post("search")["value"])) {
+            //$records = $this->tiktok_model->all_rows($limit, $start, $order, $dir);
+            $records = $this->tiktok_model->all_rows($this->storeID, $this->groupID);
+        } else {
+            $search = $this->input->post("search")["value"];
+            $records = $this->tiktok_model->search_rows($search);
+            // $records = $this->tiktok_model->search_rows($limit, $start, $search, $order, $dir);
+            $totalFiltered = $this->tiktok_model->tot_search_rows($search);
+        } //End of if else
+        $data = array();
+        if (!empty($records)) {
+            foreach ($records as $rows) {
+                $readonly = ($rows->attributes_id == 1) ? 'readonly' : '';
+                $sellPrice = $rows->p_price + $rows->p_price * ($rows->tax_rate / 100);
+                if ($rows->image_path) {
+                    $image = "<img src='$rows->image_path' width='100' height='100' id='btnImgpop' data-image_path='$rows->image_path' />";
+                } else {
+                    $img_url = base_url() . "assets/img/not-found.png";
+                    $image = "<img src='" . $img_url . "' width='50' height='50' id='btnImgpop' />";
+                };
+                $nestedData["prod_price_id"] = $rows->prod_price_id;
+                $nestedData["image"] = $image;
+                $nestedData["product_name"] = $rows->product_name;
+                $nestedData["p_price"] = "£" . $rows->p_price;
+                $nestedData["tax_rate"] = $rows->tax_rate . " %";
+                $nestedData["attributes"] = "<b>Color:</b> " . $rows->color . "<br><b>Size:</b> " . $rows->size;
+                $nestedData["selling_price"] = "£" . $sellPrice . " / " . $rows->sold_as;
+                $nestedData["prd_barcode"] = $rows->prd_barcode;
+                $nestedData["barcode"] = $rows->barcode;
+                $nestedData["stylecode"] = $rows->stylecode;
+                $nestedData["selling_price"] = "<div id='input_container' >
+                <input id='input' type='text'
+                 data-prod_price_id='$rows->prod_price_id' 
+                 data-id_product = '$rows->prod_id' 
+                 data-attributes_value = '$rows->size' 
+                 data-attributes_color = '$rows->color' 
+                 data-id_store = '$rows->store_id' 
+                 data-id_group = '$rows->group_id' 
+                 class='form-control inventory_container' 
+                 style='text-align:center' 
+                 onkeyup='numericFilter(this)'
+                 value='$rows->selling_price'
+                
+                 $readonly>
+                </div>";
+                $data[] = $nestedData;
+            } //End of for
+        } //End of if
+        $json_data = array(
+            "data" => $data,
+            "iTotalDisplayRecords" => intval($totalData),
+            "iTotalRecords" => intval($totalData),
+            "sColumns" => $this->input->post('sColumns'),
+            "sEcho" => $this->input->post('sEcho')
+        );
+        echo json_encode($json_data);
+    }
+    public function getExportProducts()
+    {
+        //$ids = $this->input->post('product_ids');
+        // $this->exportP($ids);
+        $productResult = $this->tiktok_model->exportProducts($this->input->post('product_ids'));
+        // echo "<pre>";
+        // print_r($result);
+        //echo $productResult;
+        $filename = "Tiktok_excel.xls";
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        $isPrintHeader = false;
+        $new_array = [];
+        if (!empty($productResult)) {
+            foreach ($productResult as $key => $value) {
+                if (!$isPrintHeader) {
+                    // echo implode(";", array_keys($row)) . "\n";
+                    $new_array[$key] = $value;
+                    $isPrintHeader = true;
+                }
+                // echo implode(";", array_values($row)) . "\n";
+                $new_array[$key] = $value;
+            }
+        }
+        echo json_encode($new_array);
+        // exit();
+    }
+
+    public function exportP($ids)
+    {
+        $productResult = $this->tiktok_model->exportProducts($ids);
+        // print_r($result);
+        $filename = "Tiktok_excel.xls";
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        $isPrintHeader = false;
+        if (!empty($productResult)) {
+            foreach ($productResult as $row) {
+                if (!$isPrintHeader) {
+                    echo implode("\t", array_keys($row)) . "\n";
+                    $isPrintHeader = true;
+                }
+                echo implode("\t", array_values($row)) . "\n";
+            }
+        }
+        exit();
+    }
+    public function _rules()
+    {
+        $this->form_validation->set_rules('name', 'Name', 'trim|required');
+        $this->form_validation->set_rules('product_category', 'Product Category', 'trim|required');
+        $this->form_validation->set_rules('brand', 'Product Brand', 'trim|required');
+        $this->form_validation->set_rules('attributes[]', 'Product Attributes', 'trim|required');
+        $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span><br/>');
+    }
+}

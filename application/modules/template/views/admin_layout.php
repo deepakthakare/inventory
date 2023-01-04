@@ -12,8 +12,9 @@
 
   <?php $admin_user = $this->session->userdata();
   ?>
+
   <!-- Icons-->
-  <link rel="shortcut icon" type="image/x-icon" href="<?= base_url(); ?>assets/img/favicon.png">
+  <link rel="shortcut icon" type="image/x-icon" href="<?= base_url(); ?>assets/img/favicon.ico">
   <link href="<?= base_url("assets/vendor/fontawesome-free/css/all.min.css"); ?>" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -26,7 +27,6 @@
   <script src="<?= base_url("assets/js/app.js"); ?>"></script>
   <link href="<?= base_url("assets/css/custom.css"); ?>" rel="stylesheet">
   <link rel="stylesheet" href="https://lipis.github.io/bootstrap-sweetalert/dist/sweetalert.css" />
-
 
   <!-- <link href="<?= base_url("assets/summernote/summernote.css"); ?>" rel="stylesheet">
   <script src="<?= base_url("assets/summernote/summernote-lite.js"); ?>"></script> -->
@@ -55,7 +55,14 @@
         <div class="sidebar-brand-icon rotate-n-15">
           <!-- <i class="fas fa-laugh-wink"></i> add your logo-->
         </div>
-        <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logo.png" width="50" /></div>
+        <?php if ($admin_user['store_id'] == 1) { ?>
+          <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logoIFIF.png" width="50" /></div>
+        <?php } elseif ($admin_user['store_id'] == 2) { ?>
+          <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logoRedHot.png" width="150" /></div>
+        <?php } else { ?>
+          <div class="sidebar-brand-text mx-3"><img src="<?php echo base_url(); ?>/assets/img/logo-bgf.png" width="150" /></div>
+
+        <?php } ?>
       </a>
 
       <!-- Divider -->
@@ -70,181 +77,366 @@
 
       <!-- Divider -->
       <hr class="sidebar-divider">
-
-
-
       <!-- Heading -->
       <div class="sidebar-heading">
         Inventory Mangament
       </div>
 
       <!-- Nav Item - Pages Collapse Menu -->
+      <?php
+      /*  echo "<pre>";
+      print_r($user_permission); */
+      ?>
+      <?php if ($user_permission) { ?>
+        <?php if (in_array('createProduct', $user_permission) || in_array('updateProduct', $user_permission) || in_array('viewProduct', $user_permission) || in_array('deleteProduct', $user_permission)) { ?>
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProducts" aria-expanded="true" aria-controls="collapseTwo">
+              <i class="fab fa-product-hunt"></i>
+              <span>Products</span>
+            </a>
+            <div id="collapseProducts" <?php if ($this->router->class == "products") {
+                                          echo 'class="collapse show"';
+                                        } else {
+                                          echo 'class="collapse"';
+                                        } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('products') ?>">Product List</a>
+                <!-- Tiktok Product List -->
+                <?php if (in_array('createTiktok', $user_permission) || in_array('updateTiktok', $user_permission) || in_array('viewTiktok', $user_permission) || in_array('deleteTiktok', $user_permission)) { ?>
+                  <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                        echo 'class="collapse-item active"';
+                      } else {
+                        echo 'class="collapse-item"';
+                      } ?> href="<?= admin_url('tiktok') ?>">Tiktok Product List</a>
+                <?php } ?>
+              </div>
+            </div>
+          </li>
+        <?php } ?>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCategory" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-list"></i>
-          <span>Category</span>
-        </a>
-        <div id="collapseCategory" <?php if ($this->router->class == "category") {
+
+        
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCatalog" aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-tags"></i>
+            <span>Catalog</span>
+          </a>
+          <div id="collapseCatalog" <?php if ($this->router->class == "vendors" or $this->router->class == "attributes" or $this->router->class == "warehouse" or $this->router->class == "places" or $this->router->class == "aisle" or $this->router->class == "sections" or $this->router->class == "subsections" or $this->router->class == "category" or $this->router->class == "brands") {
                                       echo 'class="collapse show"';
                                     } else {
                                       echo 'class="collapse"';
                                     } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
-                  echo 'class="collapse-item active"';
-                } else {
-                  echo 'class="collapse-item"';
-                } ?> href="<?= admin_url('category') ?>">Category List</a>
-            <a <?php if ($this->router->method == "add") {
-                  echo 'class="collapse-item active"';
-                } else {
-                  echo 'class="collapse-item"';
-                } ?> href="<?= admin_url('category/add') ?>">Add Category</a>
-          </div>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBrands" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-tags"></i>
-          <span>Brands</span>
-        </a>
-        <div id="collapseBrands" <?php if ($this->router->class == "brands") {
-                                    echo 'class="collapse show"';
-                                  } else {
-                                    echo 'class="collapse"';
-                                  } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
-                  echo 'class="collapse-item active"';
-                } else {
-                  echo 'class="collapse-item"';
-                } ?> href="<?= admin_url('brands') ?>">Brand List</a>
-            <a <?php if ($this->router->method == "add") {
-                  echo 'class="collapse-item active"';
-                } else {
-                  echo 'class="collapse-item"';
-                } ?> href="<?= admin_url('brands/add') ?>">Add Brand</a>
-          </div>
-        </div>
-      </li>
+            <div class="bg-white py-2 collapse-inner rounded">
+              <!-- Attributes  -->
+              <?php if (in_array('createAttribute', $user_permission) || in_array('updateAttribute', $user_permission) || in_array('viewAttribute', $user_permission) || in_array('deleteAttribute', $user_permission)) { ?>
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('attributes') ?>">Attributes</a>
+              <?php } ?>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAttributes" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-ellipsis-h"></i>
-          <span>Attributes</span>
-        </a>
-        <div id="collapseAttributes" <?php if ($this->router->class == "attributes") {
+              <!-- Vendors -->
+              <?php if (in_array('createVendors', $user_permission) || in_array('updateVendors', $user_permission) || in_array('viewVendors', $user_permission) || in_array('deleteVendors', $user_permission)) { ?>
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item "';
+                    } ?> href="<?= admin_url('vendors') ?>">Vendors </a>
+              <?php } ?>
+              <!-- Start Warehouse  Sections-->
+              <?php if (in_array('createWarehouse', $user_permission) || in_array('updateWarehouse', $user_permission) || in_array('viewWarehouse', $user_permission) || in_array('deleteWarehouse', $user_permission)) { ?>
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item "';
+                    } ?> href="<?= admin_url('warehouse') ?>">Warehouses</a>
+
+                <!-- Places -->
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item "';
+                    } ?> href="<?= admin_url('places') ?>">Places</a>
+                <!-- aisle -->
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item "';
+                    } ?> href="<?= admin_url('aisle') ?>">Aisle</a>
+                <!-- sections -->
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item "';
+                    } ?> href="<?= admin_url('sections') ?>">Sections</a>
+                <!-- subsections -->
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item "';
+                    } ?> href="<?= admin_url('subsections') ?>">Subsections</a>
+              <?php } ?>
+              <!-- End Warehouse  Sections-->
+              <!-- Category -->
+              <?php if (in_array('createCategory', $user_permission) || in_array('updateCategory', $user_permission) || in_array('viewCategory', $user_permission) || in_array('deleteCategory', $user_permission)) { ?>
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('category') ?>">Categories</a>
+              <?php } ?>
+              <!-- Brands -->
+              <?php if (in_array('createBrand', $user_permission) || in_array('updateBrand', $user_permission) || in_array('viewBrand', $user_permission) || in_array('deleteBrand', $user_permission)) { ?>
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('brands') ?>">Brands</a>
+              <?php } ?>
+            </div>
+          </div>
+        </li>
+
+        <?php if (in_array('createOrder', $user_permission) || in_array('updateOrder', $user_permission) || in_array('viewOrder', $user_permission) || in_array('deleteOrder', $user_permission)) { ?>
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSales" aria-expanded="true" aria-controls="collapseTwo">
+              <i class="fa-solid fa-sterling-sign"></i>
+              <span>Orders</span>
+            </a>
+            <div id="collapseSales" <?php if ($this->router->class == "sales") {
+                                      echo 'class="collapse show"';
+                                    } else {
+                                      echo 'class="collapse"';
+                                    } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <a <?php if ($this->router->method == "index" or $this->router->method == "add") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('sales') ?>">Orders List</a>
+                <a <?php if ($this->router->method == "index") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('orders') ?>">IFIF Orders List</a>
+              </div>
+            </div>
+          </li>
+        <?php } ?>
+
+        <?php if (in_array('createInventory', $user_permission) || in_array('updateInventory', $user_permission) || in_array('viewInventory', $user_permission) || in_array('deleteInventory', $user_permission)) { ?>
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventory" aria-expanded="true" aria-controls="collapseTwo">
+              <i class="fas fa-warehouse"></i>
+              <span>Inventory</span>
+            </a>
+            <div id="collapseInventory" <?php if ($this->router->class == "inventory") {
+                                          echo 'class="collapse show"';
+                                        } else {
+                                          echo 'class="collapse"';
+                                        } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('inventory') ?>">Inventory</a>
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('stocks') ?>">Live Stocks</a>
+              </div>
+            </div>
+          </li>
+        <?php } ?>
+        <!-- Start Stores Code -->
+        <?php if (in_array('createStore', $user_permission) || in_array('updateStore', $user_permission) || in_array('viewStore', $user_permission) || in_array('deleteStore', $user_permission)) { ?>
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStores" aria-expanded="true" aria-controls="collapseTwo">
+              <i class="fa-solid fa-store"></i>
+              <span>Stores</span>
+            </a>
+            <div id="collapseStores" <?php if ($this->router->class == "stores") {
                                         echo 'class="collapse show"';
                                       } else {
                                         echo 'class="collapse"';
                                       } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
-                  echo 'class="collapse-item active"';
-                } else {
-                  echo 'class="collapse-item"';
-                } ?> href="<?= admin_url('attributes') ?>">Attribute List</a>
-          </div>
-        </div>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProducts" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fab fa-product-hunt"></i>
-          <span>Products</span>
-        </a>
-        <div id="collapseProducts" <?php if ($this->router->class == "products") {
+              <div class="bg-white py-2 collapse-inner rounded">
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('stores') ?>">Stores List</a>
+                <a <?php if ($this->router->method == "add") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('stores/add') ?>">Add Stores</a>
+              </div>
+            </div>
+          </li>
+        <?php } ?>
+        <!-- End Stores code -->
+        <!-- Start Users Code -->
+        <?php if (in_array('createUser', $user_permission) || in_array('updateUser', $user_permission) || in_array('viewUser', $user_permission) || in_array('deleteUser', $user_permission)) { ?>
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="true" aria-controls="collapseTwo">
+              <i class="fa-solid fa-users"></i>
+              <span>Users</span>
+            </a>
+            <div id="collapseUsers" <?php if ($this->router->class == "users") {
                                       echo 'class="collapse show"';
                                     } else {
                                       echo 'class="collapse"';
                                     } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
-                  echo 'class="collapse-item active"';
-                } else {
-                  echo 'class="collapse-item"';
-                } ?> href="<?= admin_url('products') ?>">Product List</a>
+              <div class="bg-white py-2 collapse-inner rounded">
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('users') ?>">Users List</a>
+                <a <?php if ($this->router->method == "add") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('users/add') ?>">Add Users</a>
+              </div>
+            </div>
+          </li>
+        <?php } ?>
+        <!-- End Users code -->
 
-          </div>
+        <?php if (in_array('createGroup', $user_permission) || in_array('updateGroup', $user_permission) || in_array('viewGroup', $user_permission) || in_array('deleteGroup', $user_permission)) { ?>
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGroups" aria-expanded="true" aria-controls="collapseTwo">
+              <i class="fa-solid fa-users"></i>
+              <span>Groups</span>
+            </a>
+            <div id="collapseGroups" <?php if ($this->router->class == "groups") {
+                                        echo 'class="collapse show"';
+                                      } else {
+                                        echo 'class="collapse"';
+                                      } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('Groups') ?>">Group List</a>
+                <a <?php if ($this->router->method == "add") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('Groups/add') ?>">Add Group</a>
+              </div>
+            </div>
+          </li>
+        <?php } ?>
+        <!-- Master Update -->
+        <hr class="sidebar-divider">
+        <!-- Heading -->
+        <div class="sidebar-heading">
+          Master Update
         </div>
-      </li>
-
-
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSales" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-dollar-sign"></i>
-          <span>Orders</span>
-        </a>
-        <div id="collapseSales" <?php if ($this->router->class == "sales") {
-                                  echo 'class="collapse show"';
-                                } else {
-                                  echo 'class="collapse"';
-                                } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a <?php if ($this->router->method == "index" or $this->router->method == "add") {
-                  echo 'class="collapse-item active"';
-                } else {
-                  echo 'class="collapse-item"';
-                } ?> href="<?= admin_url('sales') ?>">Orders List</a>
-            <a <?php if ($this->router->method == "index") {
-                  echo 'class="collapse-item active"';
-                } else {
-                  echo 'class="collapse-item"';
-                } ?> href="<?= admin_url('orders') ?>">IFIF Orders List</a>
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fa fa-cog" aria-hidden="true"></i>
+            <span>Shop Parameters</span>
+          </a>
+          <div id="collapseSettings" <?php if ($this->router->class == "currency" or $this->router->class == "country" or $this->router->class == "suppliers") {
+                                        echo 'class="collapse show"';
+                                      } else {
+                                        echo 'class="collapse"';
+                                      } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                    echo 'class="collapse-item active"';
+                  } else {
+                    echo 'class="collapse-item"';
+                  } ?> href="<?= admin_url('currency') ?>">Currency List</a>
+              
+              <?php if (in_array('createTiktok', $user_permission) || in_array('updateTiktok', $user_permission) || in_array('viewTiktok', $user_permission) || in_array('deleteTiktok', $user_permission)) { ?>
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('country') ?>">Country List</a>
+              <?php } ?>
+              <?php if (in_array('createTiktok', $user_permission) || in_array('updateTiktok', $user_permission) || in_array('viewTiktok', $user_permission) || in_array('deleteTiktok', $user_permission)) { ?>
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('suppliers') ?>">Suppliers List</a>
+              <?php } ?>
+            </div>
           </div>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+          Reports
         </div>
-      </li>
+        <?php if (in_array('viewReports', $user_permission)) { ?>
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReports" aria-expanded="true" aria-controls="collapseTwo">
+              <i class="fas fa-server"></i>
+              <span>Reports</span>
+            </a>
+            <div id="collapseReports" <?php if ($this->router->class == "reports") {
+                                        echo 'class="collapse show"';
+                                      } else {
+                                        echo 'class="collapse"';
+                                      } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('reports') ?>">Reports</a>
+              </div>
+            </div>
+          </li>
+        <?php } ?>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventory" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-warehouse"></i>
-          <span>Inventory</span>
-        </a>
-        <div id="collapseInventory" <?php if ($this->router->class == "inventory") {
-                                      echo 'class="collapse show"';
-                                    } else {
-                                      echo 'class="collapse"';
-                                    } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
-                  echo 'class="collapse-item active"';
-                } else {
-                  echo 'class="collapse-item"';
-                } ?> href="<?= admin_url('inventory') ?>">Inventory</a>
-          </div>
-        </div>
-      </li>
-      <!-- Divider -->
-      <hr class="sidebar-divider d-none d-md-block">
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
 
-      <!-- Heading -->
-      <div class="sidebar-heading">
-        Reports
-      </div>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReports" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-server"></i>
-          <span>Reports</span>
-        </a>
-        <div id="collapseReports" <?php if ($this->router->class == "reports") {
-                                    echo 'class="collapse show"';
-                                  } else {
-                                    echo 'class="collapse"';
-                                  } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
-                  echo 'class="collapse-item active"';
-                } else {
-                  echo 'class="collapse-item"';
-                } ?> href="<?= admin_url('reports') ?>">Reports</a>
-          </div>
-        </div>
-      </li>
-
-
+        <!-- Heading -->
+        <!-- <div class="sidebar-heading">
+        Statistics
+      </div> -->
+        <?php if (in_array('viewStatistics', $user_permission)) { ?>
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStatistics" aria-expanded="true" aria-controls="collapseTwo">
+              <i class="fas fa-server"></i>
+              <span>Statistics</span>
+            </a>
+            <div id="collapseStatistics" <?php if ($this->router->class == "statistics") {
+                                            echo 'class="collapse show"';
+                                          } else {
+                                            echo 'class="collapse"';
+                                          } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <a <?php if ($this->router->method == "index" or $this->router->method == "edit") {
+                      echo 'class="collapse-item active"';
+                    } else {
+                      echo 'class="collapse-item"';
+                    } ?> href="<?= admin_url('statistics') ?>">Statistics List</a>
+              </div>
+            </div>
+          </li>
+        <?php } ?>
+      <?php } ?>
 
       <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">
@@ -257,6 +449,7 @@
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
       <?php $msg = $this->session->flashdata();
+      // print_r($msg);
       if ($msg) { ?>
 
         <script>
@@ -294,8 +487,8 @@
           </button>
 
           <!-- Topbar Search -->
-          <!--  <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-            <div class="input-group">
+          <!-- <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+           <div class="input-group">
               <input type="text" disabled class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
               <div class="input-group-append">
                 <button disabled class="btn btn-primary" type="button">
@@ -303,7 +496,7 @@
                 </button>
               </div>
             </div>
-          </form> -->
+          </form>  -->
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">

@@ -33,6 +33,7 @@ class Login extends Controller
             $password = $this->security->xss_clean($this->input->post("password"));
             $this->load->model("login_model");
             if ($this->login_model->process($username, $password)) {
+               // error_reporting(E_ALL ^ E_WARNING); 
                 if ($this->session->userdata['redirectToCurrent']) {
                     redirectTo($this->session->userdata['redirectToCurrent']);
                 } else {

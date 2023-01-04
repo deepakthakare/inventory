@@ -1,55 +1,76 @@
 .table {
-    color: #000000 !important;
-  }
-  
-  td,
-  th {
-    text-align: center !important;
-  }
-  .draft_order_not{
-    font-size: 16px;
-    background-color: rgb(247, 39, 50);
-    padding: 1px 11px 1px 11px;
-    color: white;
-    margin-left: 11px;
-  }
-  .draft_order{
-    font-size: 16px;
-    background-color: #0d8f37;
-    padding: 1px 11px 1px 11px;
-    color: white;
-    margin-left: 11px;
-  }
-  
+  color: #000000 !important;
+}
+
+td,
+th {
+  text-align: center !important;
+}
+
+.draft_order_not {
+  font-size: 16px;
+  background-color: rgb(247, 39, 50);
+  padding: 1px 11px 1px 11px;
+  color: white;
+  margin-left: 11px;
+}
+
+.draft_order {
+  font-size: 16px;
+  background-color: #0d8f37;
+  padding: 1px 11px 1px 11px;
+  color: white;
+  margin-left: 11px;
+}
+
 style attribute {
-    background: #5d83d9;
-    color: #fff;
+  background: #5d83d9;
+  color: #fff;
 }
+
 .name {
-    text-transform: capitalize;
-    font-size: 14px;
-    color:#000000;
+  text-transform: capitalize;
+  font-size: 14px;
+  color: #000000;
 }
+
 .modal-body {
-  color:#201f1f
+  color: #201f1f
 }
+
 .ttl-sales {
   background-color: #b169f3;
 }
+
 .ttl-product {
   background-color: #14d8f1;
 }
+
 .ttl-category {
   background-color: #01c784;
 }
+
 .ttl-brand {
   background-color: #92d130;
 }
+
 .text-dashboard {
-  color:#fff
+  color: #fff
 }
 
-.swal-wide{
-  width:260px !important;
+.swal-wide {
+  width: 260px !important;
   margin-left: 100px !important;
+}
+
+.pointer-link {
+  cursor: pointer;
+}
+
+.text-color {
+  color: cornflowerblue;
+}
+
+.fnt-size {
+  font-size: 23px;
 }

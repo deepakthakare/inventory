@@ -44,6 +44,8 @@ class Brands extends Admin_Controller
   }
   public function add_brands()
   {
+    /*  $userDetails = $this->username;
+    print_r($userDetails); */
     $this->_rules();
     if ($this->form_validation->run() == FALSE) {
       $this->add();
@@ -56,8 +58,6 @@ class Brands extends Admin_Controller
         $image = moveFile(0, $this->input->post("upload_image"), "image");
         $data['image_path'] = $image[0];
       }
-
-
       $result = $this->brands_model->add($data);
       if ($result) {
         $this->activity_model->add(array('login_id' => $this->login_id, 'activity' => ucfirst($this->username) . ' adde a brand at ' . date("M d, Y H:i")));
